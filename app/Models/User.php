@@ -19,6 +19,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role', 
         // Kolom Data Kampus
         'university_name',
         'university_type',

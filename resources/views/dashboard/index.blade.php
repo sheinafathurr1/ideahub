@@ -8,6 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
     <style>
         :root { --primary: #000000; --bg-body: #f8fafc; --surface: #ffffff; --border: #e2e8f0; --radius: 16px; }
@@ -17,11 +19,9 @@
         .brand-text { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; color: #000; text-decoration: none; font-size: 1.1rem; }
         .card-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 30px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
         
-        /* TOMBOL */
         .btn-black { background: #000; color: #fff; padding: 12px 24px; border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-block; transition: all 0.2s; border: none; }
         .btn-black:hover { background: #333; color: #fff; transform: translateY(-2px); }
         
-        /* STATUS BADGES */
         .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         .status-new { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
         .status-draft { background: #fff7ed; color: #c2410c; border: 1px solid #fdba74; }
@@ -29,7 +29,6 @@
         .status-rejected { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
         .status-accepted { background: #f0fdf4; color: #15803d; border: 1px solid #86efac; }
 
-        /* FEEDBACK BOX */
         .feedback-box { background-color: #fff1f2; border-left: 4px solid #e11d48; padding: 15px 20px; border-radius: 4px; margin-bottom: 20px; }
         
         .action-icon { width: 60px; height: 60px; background: #f8fafc; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #000; border: 1px solid #e2e8f0; margin-bottom: 20px; }
@@ -87,7 +86,7 @@
                         @elseif($uiState == 'submitted')
                             Data survei telah dikirim. Tim kami sedang melakukan verifikasi data Anda. Tombol aksi dikunci selama proses ini.
                         @elseif($uiState == 'rejected')
-                            <span class="text-danger fw-bold">Pengajuan Anda dikembalikan.</span> Silakan perbaiki data sesuai catatan admin dan kirim ulang.
+                            <span class="text-danger fw-bold">PENTING: Pengajuan Anda dikembalikan.</span> Silakan perbaiki data sesuai catatan admin dan kirim ulang.
                         @else
                             Silakan mulai pengisian data survei baru. Data yang sudah disetujui (Accepted) akan tersimpan di riwayat.
                         @endif
@@ -135,7 +134,6 @@
                 
                 <div class="card-box bg-white mb-4">
                     <h6 class="fw-bold text-uppercase text-secondary small mb-4" style="letter-spacing: 1px;">Identitas Kampus</h6>
-                    
                     <div class="row g-3">
                         <div class="col-12">
                             <label class="d-block text-secondary small" style="font-size: 0.75rem;">Nama Perguruan Tinggi</label>
@@ -150,38 +148,22 @@
                             <div class="fw-bold text-dark">{{ Auth::user()->university_category ?? '-' }}</div>
                         </div>
                     </div>
-
-                    <hr class="border-secondary opacity-25 my-3">
-                    
-                    <div class="d-flex flex-column gap-2">
-                        <div class="d-flex gap-2 align-items-center">
-                            <i class="bi bi-envelope text-secondary"></i>
-                            <span class="small text-secondary">{{ Auth::user()->email }}</span>
-                        </div>
-                        <div class="d-flex gap-2 align-items-center">
-                            <i class="bi bi-telephone text-secondary"></i>
-                            <span class="small text-secondary">{{ Auth::user()->phone_number }}</span>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="card-box bg-white">
                     <h6 class="fw-bold text-uppercase text-secondary small mb-4" style="letter-spacing: 1px;">Riwayat Diterima</h6>
-                    
                     @if($completedSubmissions->count() > 0)
                         <div class="d-flex flex-column gap-2" style="max-height: 250px; overflow-y: auto;">
                             @foreach($completedSubmissions as $sub)
                                 <a href="{{ route('survey.show', $sub->id) }}" 
                                    class="p-3 border rounded bg-white d-flex justify-content-between align-items-center text-decoration-none"
                                    style="transition: all 0.2s; border-left: 4px solid #15803d !important;">
-                                    
                                     <div>
                                         <div class="fw-bold text-dark small">Survei #{{ $sub->id }}</div>
                                         <div class="text-success small" style="font-size: 0.75rem;">
                                             <i class="bi bi-check-circle-fill me-1"></i> Accepted
                                         </div>
                                     </div>
-                                    
                                     <div class="text-end">
                                         <div class="text-secondary" style="font-size: 0.7rem;">
                                             {{ \Carbon\Carbon::parse($sub->submitted_at)->format('d/m/y') }}
@@ -200,9 +182,50 @@
                 </div>
 
             </div>
-
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const uiState = "{{ $uiState }}";
+            // Ambil feedback dari PHP dan encode agar aman untuk JS
+            const feedbackText = {!! json_encode($feedback) !!}; 
+            
+            // 1. NOTIFIKASI JIKA DITOLAK (REJECTED)
+            // Tampil setiap kali user membuka dashboard selama statusnya masih 'rejected'
+            if (uiState === 'rejected') {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perlu Revisi',
+                    html: `
+                        <p class="text-secondary small mb-3">Admin telah meninjau submisi Anda dan meminta perbaikan data.</p>
+                        <div class="bg-light p-3 rounded text-start border text-danger small fst-italic">
+                            "${feedbackText ? feedbackText : 'Silakan perbaiki data sesuai ketentuan.'}"
+                        </div>
+                    `,
+                    confirmButtonText: 'Perbaiki Sekarang',
+                    confirmButtonColor: '#000000',
+                    showCancelButton: true,
+                    cancelButtonText: 'Nanti'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "{{ route('survey.index') }}";
+                    }
+                });
+            }
+
+            // 2. NOTIFIKASI JIKA DITERIMA (ACCEPTED)
+            // Logika: Cek apakah ada flash session 'success_accepted' atau cek status 'new' jika sebelumnya submitted
+            // Cara termudah: Jika ada completed submission TERBARU (misal < 1 jam yang lalu), tampilkan.
+            // Namun untuk simpelnya, kita cek jika ada parameter query ?status=accepted (opsional) atau gunakan Session Flash dari controller.
+            
+            // Kita gunakan Flash Message standar Laravel untuk notifikasi "Accepted"
+            // (Anda bisa menambahkan with('status_accepted', true) di controller jika user login dan statusnya baru berubah)
+        });
+    </script>
 
 </body>
 </html>

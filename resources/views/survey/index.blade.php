@@ -161,7 +161,6 @@
     
     <div class="text-center mb-5" id="introHeader">
         <h2 class="fw-bold display-6">Survei Lanskap Inklusi</h2>
-        <p class="text-secondary fs-5">IdeaHub x Telkom University</p>
     </div>
 
     <div id="stickyHeader" class="header-card">

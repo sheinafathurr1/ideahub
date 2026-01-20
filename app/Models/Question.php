@@ -3,15 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Question extends Model
 {
     protected $guarded = ['id'];
 
-    // Relasi ke Pilihan Jawaban
-    public function options()
+    // UPDATE DI SINI: Gunakan model Option::class
+    public function options(): HasMany
     {
-        return $this->hasMany(QuestionOption::class);
+        return $this->hasMany(Option::class);
     }
 
     // Relasi ke Pertanyaan Induk (Self Join)

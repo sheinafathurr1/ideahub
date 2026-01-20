@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SurveyController;
+use App\Http\Controllers\AdminController;
 
 // --- 1. HALAMAN UTAMA ---
 Route::get('/', function () {
@@ -31,4 +32,18 @@ Route::middleware('auth')->group(function () {
     Route::post('/survey/draft', [SurveyController::class, 'saveDraft'])->name('survey.save_draft');
     Route::post('/survey/submit', [SurveyController::class, 'store'])->name('survey.store');
     Route::get('/survey/history/{id}', [SurveyController::class, 'show'])->name('survey.show');
+});
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::get('/submission/{id}', [AdminController::class, 'show'])->name('admin.show');
+    Route::post('/submission/{id}/update', [AdminController::class, 'updateStatus'])->name('admin.update');
+    
+    // --- ROUTE BARU ---
+    Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
+    Route::get('/reports', [AdminController::class, 'reports'])->name('admin.reports');
+    Route::get('/settings', [AdminController::class, 'settings'])->name('admin.settings');
+    // Route untuk download laporan
+    Route::get('/reports/export', [AdminController::class, 'exportReport'])->name('admin.reports.export');
+    Route::get('/history', [AdminController::class, 'history'])->name('admin.history');
 });

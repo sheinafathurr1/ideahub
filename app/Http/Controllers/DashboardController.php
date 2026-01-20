@@ -10,25 +10,27 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        // 1. CEK ROLE: JIKA ADMIN, LEMPAR KE HALAMAN ADMIN
+        if (Auth::user()->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+
+        // 2. JIKA BUKAN ADMIN (USER BIASA), JALANKAN LOGIKA DASHBOARD USER SEPERTI BIASA
         $user = Auth::user();
         
-        // 1. Cek yang Perlu Aksi User (Draft ATAU Rejected)
         $activeSubmission = Submission::where('user_id', $user->id)
                         ->whereIn('status', ['draft', 'rejected'])
                         ->first();
 
-        // 2. Cek yang Sedang Direview (Submitted) - Read Only
         $pendingSubmission = Submission::where('user_id', $user->id)
                         ->where('status', 'submitted')
                         ->first();
 
-        // 3. History yang Selesai (Accepted)
         $completedSubmissions = Submission::where('user_id', $user->id)
                         ->where('status', 'accepted')
                         ->orderBy('submitted_at', 'desc')
                         ->get();
 
-        // LOGIKA UI STATE
         $uiState = 'new'; 
         $progress = 0;
         $feedback = null;
@@ -40,11 +42,10 @@ class DashboardController extends Controller
             } else {
                 $uiState = 'draft';
             }
-            // Hitung progress (asumsi 10 step, sesuaikan dengan realita)
             $progress = min(round(($activeSubmission->current_step / 10) * 100), 95);
         } 
         elseif ($pendingSubmission) {
-            $uiState = 'submitted'; // State menunggu
+            $uiState = 'submitted';
         }
 
         return view('dashboard.index', compact(
