@@ -23,6 +23,10 @@
         <a href="{{ route('admin.reports') }}" class="nav-link {{ request()->routeIs('admin.reports') ? 'active' : '' }}">
             <i class="bi bi-file-earmark-bar-graph-fill"></i> Reports
         </a>
+
+        <a href="{{ route('admin.news.index') }}" class="nav-link {{ request()->routeIs('admin.news.*') ? 'active' : '' }}">
+            <i class="bi bi-newspaper"></i> News
+        </a>
         
         <a href="{{ route('admin.settings') }}" class="nav-link {{ request()->routeIs('admin.settings') ? 'active' : '' }}">
             <i class="bi bi-gear-fill"></i> Settings

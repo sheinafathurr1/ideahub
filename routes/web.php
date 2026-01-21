@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\NewsController;
 
 // --- 1. HALAMAN UTAMA ---
 Route::get('/', function () {
@@ -46,4 +47,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     // Route untuk download laporan
     Route::get('/reports/export', [AdminController::class, 'exportReport'])->name('admin.reports.export');
     Route::get('/history', [AdminController::class, 'history'])->name('admin.history');
+
+    // ========== NEWS ROUTES ==========
+    Route::get('/news', [NewsController::class, 'index'])->name('admin.news.index');
+    Route::get('/news/create', [NewsController::class, 'create'])->name('admin.news.create');
+    Route::post('/news', [NewsController::class, 'store'])->name('admin.news.store');
+    Route::get('/news/{news}/edit', [NewsController::class, 'edit'])->name('admin.news.edit');
+    Route::put('/news/{news}', [NewsController::class, 'update'])->name('admin.news.update');
+    Route::delete('/news/{news}', [NewsController::class, 'destroy'])->name('admin.news.destroy');
 });
