@@ -7,11 +7,18 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\LandingController;
 
 // --- 1. HALAMAN UTAMA ---
-Route::get('/', function () {
-    return Auth::check() ? redirect()->route('dashboard.index') : redirect()->route('login');
-});
+// Route::get('/', function () {
+//     return Auth::check() ? redirect()->route('dashboard.index') : redirect()->route('login');
+// });
+    // ========== LANDING PAGE (PUBLIC) ==========
+Route::get('/', [LandingController::class, 'index'])->name('landing.home');
+Route::get('/universities', [LandingController::class, 'universities'])->name('landing.universities');
+Route::get('/universities/{slug}', [LandingController::class, 'universityDetail'])->name('landing.university-detail');
+Route::get('/news', [LandingController::class, 'news'])->name('landing.news');
+Route::get('/news/{slug}', [LandingController::class, 'newsDetail'])->name('landing.news-detail');
 
 // --- 2. GUEST ---
 Route::middleware('guest')->group(function () {
