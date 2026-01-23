@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\DB;
 
 class SurveyController extends Controller
 {
-    // --- TAMPILKAN FORM ---
     public function index()
     {
         $questions = Question::with('options')
@@ -24,82 +23,111 @@ class SurveyController extends Controller
             $chunks = $questions->chunk(10); 
         }
 
-        // LOGIKA BARU: Ambil jika Draft ATAU Rejected (Keduanya bisa diedit)
+        // Ambil submisi aktif (Draft atau Rejected) agar user bisa melanjutkannya
         $submission = Submission::where('user_id', Auth::id())
                         ->whereIn('status', ['draft', 'rejected']) 
                         ->first();
         
+        // Jika statusnya sudah submitted/accepted, redirect (opsional)
+        // $completed = Submission::where('user_id', Auth::id())->whereIn('status', ['submitted', 'accepted'])->first();
+        // if($completed) return redirect()->route('dashboard.index')->with('info', 'Submisi Anda sudah dikirim.');
+
         $existingAnswers = [];
         if ($submission) {
             $values = SubmissionValue::where('submission_id', $submission->id)->get();
             foreach ($values as $val) {
-                $decoded = json_decode($val->value, true);
-                $existingAnswers[$val->question_id] = is_array($decoded) ? $decoded : $val->value;
+                // Auto decode JSON
+                if ($this->isJson($val->value)) {
+                    $existingAnswers[$val->question_id] = json_decode($val->value, true);
+                } else {
+                    $existingAnswers[$val->question_id] = $val->value;
+                }
             }
         }
 
         return view('survey.index', compact('chunks', 'submission', 'existingAnswers'));
     }
 
-    // --- SIMPAN DRAFT (AJAX) ---
-    public function saveDraft(Request $request)
+    /**
+     * LOGIKA UTAMA: MENANGANI DRAFT DAN SUBMIT
+     */
+    public function store(Request $request)
     {
-        $user = Auth::user();
+        // 1. Cek Tombol Aksi (Draft vs Submit)
+        // Default ke 'draft' jika tidak ada input action
+        $action = $request->input('action', 'draft'); 
 
         try {
             DB::beginTransaction();
 
-            // 1. Get/Create Submission
-            $submission = Submission::firstOrCreate(
-                ['user_id' => $user->id, 'status' => 'draft'],
-                ['current_step' => 1]
-            );
+            $user = Auth::user();
 
-            if ($request->has('current_step')) {
-                $submission->update(['current_step' => $request->current_step]);
+            // 2. Cari Submisi yang sedang aktif (Draft atau Rejected)
+            // Kita cari dulu manual agar tidak membuat duplikat jika statusnya 'rejected'
+            $submission = Submission::where('user_id', $user->id)
+                            ->whereIn('status', ['draft', 'rejected'])
+                            ->first();
+
+            // Jika belum ada sama sekali, buat baru dengan status draft
+            if (!$submission) {
+                $submission = new Submission();
+                $submission->user_id = $user->id;
+                $submission->status = 'draft';
+                $submission->current_step = 1;
+                $submission->save();
             }
 
-            // 2. Loop Inputs
-            $inputs = $request->except(['_token', 'current_step']);
+            // 3. Update Data Header (Step & Status)
+            if ($request->has('current_step')) {
+                $submission->current_step = $request->current_step;
+            }
+
+            // PENTING: Hanya ubah status jadi 'submitted' jika action = 'submit'
+            // Jika action = 'draft', biarkan status apa adanya (tetap 'draft' atau 'rejected')
+            if ($action === 'submit') {
+                $submission->status = 'submitted';
+                $submission->submitted_at = now();
+            }
+            
+            $submission->save();
+
+            // 4. Simpan Jawaban (Looping Input)
+            $inputs = $request->except(['_token', 'action', 'current_step']);
 
             foreach ($inputs as $key => $value) {
-                // Filter hanya input pertanyaan (q_1, q_2, dst)
                 if (str_starts_with($key, 'q_')) {
                     $questionId = str_replace('q_', '', $key);
                     
-                    // --- LOGIKA INPUT "LAINNYA" (RADIO) ---
-                    // Cek apakah ada input teks pendamping untuk pertanyaan ini?
-                    // Name di view: "other_text_{qid}"
+                    // -- Logika "Lainnya" pada Radio --
                     $otherTextKey = 'other_text_' . $questionId;
-                    
-                    if ($request->has($otherTextKey)) {
-                        $customText = $request->input($otherTextKey);
-                        if (!empty($customText)) {
-                            // Timpa value (misal "Lainnya") dengan teks user (misal "Universitas X")
-                            $value = $customText;
-                        }
+                    if ($request->has($otherTextKey) && !empty($request->input($otherTextKey))) {
+                        $value = $request->input($otherTextKey);
                     }
 
-                    // --- LOGIKA INPUT "LAINNYA" (CHECKBOX) ---
-                    // Jika Checkbox, value adalah Array. Kita perlu cek satu-satu.
+                    // -- Logika Array (Checkbox & Matrix) --
                     if (is_array($value)) {
                         $newValueArray = [];
-                        foreach ($value as $item) {
-                            // Cek apakah item ini punya teks pendamping?
-                            // Name di view: "other_text_{qid}_{item}"
-                            // Kita sanitize item agar aman jadi key array (misal spasi jadi underscore)
-                            $chkKey = 'other_text_' . $questionId . '_' . str_replace(' ', '_', $item);
-                            
-                            if ($request->has($chkKey) && !empty($request->input($chkKey))) {
-                                $newValueArray[] = $request->input($chkKey); // Simpan teks customnya
+                        foreach ($value as $k => $item) {
+                            // Cek apakah ini Matrix (Key String) atau Checkbox (Key Index)
+                            if (is_string($k)) {
+                                // Matrix: Key adalah Label Opsi, Value adalah Nilai
+                                $newValueArray[$k] = $item;
                             } else {
-                                $newValueArray[] = $item; // Simpan value aslinya
+                                // Checkbox: Item adalah Value opsi
+                                // Cek input teks pendamping checkbox
+                                $chkKey = 'other_text_' . $questionId . '_' . str_replace(' ', '_', $item);
+                                if ($request->has($chkKey) && !empty($request->input($chkKey))) {
+                                    $newValueArray[] = $request->input($chkKey);
+                                } else {
+                                    $newValueArray[] = $item;
+                                }
                             }
                         }
+                        // Encode jadi JSON agar bisa masuk database
                         $value = json_encode($newValueArray);
                     }
 
-                    // Simpan ke DB
+                    // Simpan ke Tabel SubmissionValue
                     SubmissionValue::updateOrCreate(
                         ['submission_id' => $submission->id, 'question_id' => $questionId],
                         ['value' => $value]
@@ -108,35 +136,39 @@ class SurveyController extends Controller
             }
 
             DB::commit();
-            return response()->json(['status' => 'success', 'message' => 'Draft tersimpan']);
+
+            // 5. Response / Redirect
+            if ($request->ajax()) {
+                return response()->json(['status' => 'success', 'message' => 'Progress tersimpan.']);
+            }
+
+            if ($action === 'submit') {
+                return redirect()->route('dashboard.index')
+                    ->with('success', 'Survei berhasil dikirim! Mohon tunggu review admin.');
+            }
+
+            return redirect()->back()->with('success', 'Draft berhasil disimpan.');
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+            if ($request->ajax()) {
+                return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+            }
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
 
-    // --- FINAL SUBMIT ---
-    public function store(Request $request)
+    // Fungsi khusus untuk AJAX (memaksa action=draft)
+    public function saveDraft(Request $request)
     {
-        $this->saveDraft($request);
-
-        // Cari yang Draft atau Rejected (yang sedang dikerjakan)
-        $submission = Submission::where('user_id', Auth::id())
-                        ->whereIn('status', ['draft', 'rejected'])
-                        ->first();
-
-        if ($submission) {
-            $submission->update([
-                'status' => 'submitted', // Ubah status jadi Submitted (Menunggu Review)
-                'submitted_at' => now(),
-            ]);
-        }
-
-        return redirect()->route('dashboard.index')->with('success', 'Survei berhasil dikirim! Mohon tunggu review admin.');
+        $request->merge(['action' => 'draft']);
+        return $this->store($request);
     }
 
-    // --- DETAIL HISTORY ---
+    // Helper
+    private function isJson($string) {
+        return is_string($string) && is_array(json_decode($string, true)) && (json_last_error() == JSON_ERROR_NONE);
+    }
     public function show($id)
     {
         $submission = Submission::where('id', $id)

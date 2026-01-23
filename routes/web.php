@@ -37,7 +37,7 @@ Route::middleware('auth')->group(function () {
 
     // Survey
     Route::get('/survey', [SurveyController::class, 'index'])->name('survey.index');
-    Route::post('/survey/draft', [SurveyController::class, 'saveDraft'])->name('survey.save_draft');
+    Route::post('/survey/save-draft', [SurveyController::class, 'saveDraft'])->name('survey.save_draft');
     Route::post('/survey/submit', [SurveyController::class, 'store'])->name('survey.store');
     Route::get('/survey/history/{id}', [SurveyController::class, 'show'])->name('survey.show');
 });
