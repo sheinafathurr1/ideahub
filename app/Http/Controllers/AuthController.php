@@ -28,8 +28,9 @@ class AuthController extends Controller
             // Validasi Data Kampus
             'university_name' => 'required|string|max:255',
             'university_type' => 'required|in:PTN,PTS',
+            'university_logo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'university_category' => 'required|string',
-            'has_disability_study_program' => 'required|boolean', // <--- VALIDASI BARU
+            'has_disability_study_program' => 'required|boolean',
             'phone_number' => 'required|numeric',
         ], [
             'email.unique' => 'Email ini sudah terdaftar.',
@@ -37,6 +38,11 @@ class AuthController extends Controller
             'password.min' => 'Password minimal 8 karakter.',
             'has_disability_study_program.required' => 'Pertanyaan terkait Prodi PLB wajib diisi.',
         ]);
+
+        $logoPath = null;
+        if ($request->hasFile('university_logo')) {
+            $logoPath = $request->file('university_logo')->store('university_logos', 'public');
+        }
 
         // 2. Buat User Baru
         $user = User::create([
@@ -47,6 +53,7 @@ class AuthController extends Controller
             // Simpan Data Kampus
             'university_name' => $validated['university_name'],
             'university_type' => $validated['university_type'],
+            'university_logo' => $logoPath,
             'university_category' => $validated['university_category'],
             'has_disability_study_program' => $validated['has_disability_study_program'], // <--- SIMPAN KE DB
             'phone_number' => $validated['phone_number'],

@@ -27,105 +27,83 @@
 </div>
 
 <div class="card border-black rounded-4 shadow-sm mb-5">
-    <div class="card-body p-0">
-        <div class="accordion accordion-flush rounded-4 overflow-hidden" id="adminViewAccordion">
-            
-            @foreach($chunks as $dimensionName => $chunkQuestions)
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed fw-bold py-3 bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#dim{{ $loop->index }}">
-                            {{ $dimensionName }}
-                        </button>
-                    </h2>
-                    <div id="dim{{ $loop->index }}" class="accordion-collapse collapse" data-bs-parent="#adminViewAccordion">
-                        <div class="accordion-body p-4">
-                            
-                            @foreach($chunkQuestions as $q)
-                                @if(str_contains($q->question, 'Q0.')) @continue @endif
-                                
-                                @php
-                                    $val = $answers[$q->id] ?? null;
-                                    
-                                    // Cek apakah JSON
-                                    if ($val && is_string($val) && (str_starts_with($val, '[') || str_starts_with($val, '{'))) {
-                                        $decoded = json_decode($val, true);
-                                        if (json_last_error() === JSON_ERROR_NONE) {
-                                            $val = $decoded;
+        <div class="card-body p-0">
+            <div class="accordion accordion-flush" id="adminViewAccordion">
+                @foreach($chunks as $dimensionName => $chunkQuestions)
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed fw-bold bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#dim{{ $loop->index }}">
+                                {{ $dimensionName }}
+                            </button>
+                        </h2>
+                        <div id="dim{{ $loop->index }}" class="accordion-collapse collapse">
+                            <div class="accordion-body p-4">
+                                @foreach($chunkQuestions as $q)
+                                    @php 
+                                        $val = $answers[$q->id] ?? null;
+                                        // Auto Decode JSON
+                                        if(is_string($val) && (str_starts_with($val,'[') || str_starts_with($val,'{'))) {
+                                            $decoded = json_decode($val, true);
+                                            if(json_last_error() === JSON_ERROR_NONE) $val = $decoded;
                                         }
-                                    }
-                                @endphp
+                                    @endphp
 
-                                <div class="mb-4 pb-3 border-bottom border-light">
-                                    <label class="d-block fw-bold text-secondary mb-2" style="font-size: 0.9rem;">
-                                        {{ $q->question }}
-                                    </label>
-                                    
-                                    {{-- TIPE 1: FILE DOWNLOAD --}}
-                                    @if($q->type == 'file' && $val)
-                                        <div class="p-3 border rounded-3 bg-light d-flex align-items-center gap-3">
-                                            <i class="bi bi-file-earmark-pdf fs-3 text-danger"></i> 
-                                            <div class="overflow-hidden">
-                                                <div class="fw-bold text-dark text-truncate">{{ is_string($val) ? $val : 'Lampiran File' }}</div>
-                                                <small class="text-muted">Klik kanan > Save As untuk mengunduh</small>
-                                            </div>
-                                        </div>
-
-                                    {{-- TIPE 2: MATRIX (Q6a) - PERBAIKAN DI SINI --}}
-                                    @elseif($q->type == 'matrix')
-                                        <div class="table-responsive border rounded-3">
-                                            <table class="table table-sm table-striped mb-0">
-                                                <thead class="bg-light">
-                                                    <tr>
-                                                        <th class="ps-3">Kategori</th>
-                                                        <th class="text-end pe-3">Jumlah / Nilai</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {{-- Loop Opsi dari Database ($q->options) --}}
-                                                    @foreach($q->options as $opt)
-                                                        @php
-                                                            // Cari jawaban yang cocok dengan label opsi
-                                                            $answerValue = '-';
-                                                            if(is_array($val) && isset($val[$opt->option_label])) {
-                                                                $answerValue = $val[$opt->option_label];
-                                                            }
-                                                        @endphp
-                                                        <tr>
-                                                            <td class="ps-3 text-secondary">{{ $opt->option_label }}</td>
-                                                            <td class="text-end pe-3 fw-bold text-dark">{{ $answerValue }}</td>
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-                                    {{-- TIPE 3: CHECKBOX LIST --}}
-                                    @elseif(is_array($val))
-                                        <div class="bg-light p-3 rounded-3 border">
-                                            <ul class="mb-0 ps-3">
-                                                @foreach($val as $v) 
-                                                    <li class="mb-1">{{ is_string($v) ? $v : json_encode($v) }}</li> 
-                                                @endforeach
-                                            </ul>
-                                        </div>
+                                    <div class="mb-4 border-bottom pb-3">
+                                        <label class="d-block fw-bold text-secondary mb-2">{{ $q->question }}</label>
                                         
-                                    {{-- TIPE 4: TEKS BIASA --}}
-                                    @else
-                                        <div class="fw-medium text-dark fs-5">
-                                            {{ $val ?? '-' }}
-                                        </div>
-                                    @endif
-                                </div>
-                            @endforeach
+                                        {{-- TIPE FILE --}}
+                                        @if($q->type == 'file' && $val)
+                                            <div class="p-3 border rounded bg-light">
+                                                <i class="bi bi-file-earmark-pdf text-danger me-2"></i> {{ is_string($val)?$val:'File' }}
+                                                <a href="#" class="float-end small text-decoration-none">Unduh</a>
+                                            </div>
 
+                                        {{-- PERBAIKAN: TIPE MATRIX (Q6a) --}}
+                                        @elseif($q->type == 'matrix')
+                                            <div class="table-responsive border rounded">
+                                                <table class="table table-sm table-striped mb-0">
+                                                    <thead class="bg-light">
+                                                        <tr><th class="ps-3">Kategori</th><th class="text-end pe-3">Isian User</th></tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($q->options as $opt)
+                                                            @php
+                                                                $answerValue = '-';
+                                                                // Cari jawaban dengan mencocokkan key secara teliti (trim spasi)
+                                                                if (is_array($val)) {
+                                                                    $dbLabel = trim($opt->option_label);
+                                                                    foreach ($val as $key => $v) {
+                                                                        if (trim($key) === $dbLabel) {
+                                                                            $answerValue = $v;
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                }
+                                                            @endphp
+                                                            <tr>
+                                                                <td class="ps-3 text-secondary">{{ $opt->option_label }}</td>
+                                                                <td class="text-end pe-3 fw-bold text-dark">{{ $answerValue }}</td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        {{-- TIPE LAIN --}}
+                                        @elseif(is_array($val)) 
+                                            <ul class="mb-0 ps-3">@foreach($val as $v)<li>{{ is_string($v)?$v:json_encode($v) }}</li>@endforeach</ul>
+                                        @else 
+                                            <div class="fw-medium text-dark">{{ $val ?? '-' }}</div> 
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
-                </div>
-            @endforeach
-
+                @endforeach
+            </div>
         </div>
     </div>
-</div>
 
 <div class="fixed-bottom bg-white border-top border-secondary py-3 shadow-lg" style="z-index: 1050;">
     <div class="container d-flex justify-content-between align-items-center">

@@ -20,12 +20,12 @@ class User extends Authenticatable
         'email',
         'password',
         'role', 
-        // Kolom Data Kampus
         'university_name',
         'university_type',
         'university_category',
-        'has_disability_study_program', // <--- KOLOM BARU (Q3)
+        'has_disability_study_program',
         'phone_number',
+        'university_logo',
     ];
 
     protected $hidden = [
@@ -38,7 +38,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'has_disability_study_program' => 'boolean', // Casting ke boolean
+            'has_disability_study_program' => 'boolean',
         ];
     }
 }

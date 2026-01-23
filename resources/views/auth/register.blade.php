@@ -92,7 +92,7 @@
             <p class="text-secondary small">Lengkapi data diri dan institusi untuk memulai survei</p>
         </div>
 
-        <form action="{{ route('register') }}" method="POST">
+        <form action="{{ route('register') }}" method="POST" enctype="multipart/form-data">
             @csrf
             
             <div class="row g-5"> <div class="col-md-6">
@@ -125,6 +125,19 @@
                     <div class="mb-3">
                         <label class="form-label small fw-bold text-secondary">Nama Perguruan Tinggi</label>
                         <input type="text" name="university_name" class="form-control" placeholder="Contoh: Telkom University" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="university_logo" class="form-label">Logo Kampus</label>
+                        <input type="file" 
+                            class="form-control @error('university_logo') is-invalid @enderror" 
+                            id="university_logo" 
+                            name="university_logo" 
+                            accept="image/*">
+                        @error('university_logo')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <div class="form-text text-muted small">Format: JPG, PNG, JPEG. Maks: 2MB.</div>
                     </div>
 
                     <div class="row">
