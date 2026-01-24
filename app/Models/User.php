@@ -22,6 +22,7 @@ class User extends Authenticatable
         'password',
         'role', 
         'university_name',
+        'slug',
         'university_type',
         'university_category',
         'has_disability_study_program',

@@ -1,7 +1,5 @@
 @extends('landing.layouts.app')
-
 @section('title', 'Browse Universities')
-
 @push('styles')
 <style>
     .page-header {
@@ -10,20 +8,16 @@
         padding: 3rem 0;
         text-align: center;
     }
-
     .page-header h1 {
         font-size: 2.5rem;
         margin-bottom: 0.5rem;
     }
-
+    
     /* FILTER SECTION */
     .filter-section {
         padding: 2rem 0;
         background: var(--white);
-        /* margin-bottom: 2rem; */
-        /* border-bottom: 2px solid var(--black); */
     }
-
     .filter-toggle {
         background: var(--black);
         color: var(--white);
@@ -37,224 +31,316 @@
         justify-content: space-between;
         align-items: center;
         cursor: pointer;
-        transition: all 0.2s;
-    }
-
-    .filter-toggle:hover {
-        background: var(--gray-900);
-    }
-
-    .filter-toggle i {
-        transition: transform 0.3s;
+        transition: all 0.3s ease;
     }
 
     .filter-toggle.active i {
         transform: rotate(180deg);
     }
-
     .filter-content {
         max-height: 0;
         overflow: hidden;
-        background: var(--gray-100);
-        padding: 0 2rem;
-        transition: max-height 0.4s ease-out, padding 0.2s ease-out;
+        padding: 0 1rem;
+        transition: max-height 0.4s ease-out, padding 0.3s ease-out;
+        background: var(--white);
     }
-
     .filter-content.show {
-        max-height: 600px;
-        padding: 2rem;
+        max-height: 800px;
+        padding: 2rem 1rem;
+        background: var(--black);
     }
-
     .support-filters {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+        gap: 0;
     }
-
     .support-filter-item {
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
         padding: 1rem;
-        background: var(--white);
-        border: 2px solid var(--black);
-        cursor: pointer;
-        transition: all 0.2s;
-        text-decoration: none;
-        color: var(--black);
-    }
-
-    /* .support-filter-item:hover {
-        transform: translateY(-3px);
-        box-shadow: 4px 4px 0 var(--black);
-        color: var(--black);
-    } */
-
-    .support-filter-item.active {
         background: var(--black);
         color: var(--white);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
     }
 
+    .support-filter-item.active {
+        background: var(--white);
+        color: var(--black);
+        transform: scale(1.05);
+        z-index: 2;
+    }
     .support-icon {
-        width: 50px;
-        height: 50px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
-        background: var(--gray-200);
+        background: var(--white);
+        color: var(--black);
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 0.75rem;
-        font-size: 1.5rem;
-        transition: all 0.2s;
+        margin-bottom: 0.5rem;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
     }
-
     .support-filter-item.active .support-icon {
-        background: var(--white);
-        color: var(--black);
+        background: var(--black);
+        color: var(--white);
     }
-
     .support-label {
         font-weight: 600;
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         line-height: 1.2;
     }
-
+    
     /* UNIVERSITIES GRID */
     .universities-grid {
         padding: 3rem 0;
     }
-
     .university-card {
-        border: 2px solid var(--black);
         overflow: hidden;
-        transition: all 0.3s;
         background: var(--white);
+        color: var(--black);
         height: 100%;
         display: flex;
         flex-direction: column;
         text-decoration: none;
-        color: inherit;
-    }
-
-    .university-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 8px 8px 0 var(--black);
-        color: inherit;
+        transition: all 0.3s ease;
     }
 
     .university-logo {
         width: 100%;
         height: 200px;
-        background: var(--gray-200);
+        background: var(--gray-300);
         display: flex;
         align-items: center;
         justify-content: center;
-        border-bottom: 2px solid var(--black);
+        overflow: hidden;
     }
 
     .university-logo i {
         font-size: 4rem;
         color: var(--gray-700);
     }
-
     .university-card-body {
         padding: 1.5rem;
         flex-grow: 1;
         display: flex;
         flex-direction: column;
+        background: var(--black);
+        color: var(--white);
     }
-
     .university-name {
         font-size: 1.25rem;
         font-weight: 700;
         margin-bottom: 1rem;
-        color: var(--black);
+        color: var(--white);
         line-height: 1.3;
         text-align: center;
     }
-
     .university-meta {
         display: flex;
         gap: 0.5rem;
         flex-wrap: wrap;
         margin-bottom: 1rem;
+        justify-content: center;
     }
-
     .university-badge {
-        background: var(--black);
-        color: var(--white);
+        background: var(--white);
+        color: var(--black);
         padding: 0.25rem 0.75rem;
         font-size: 0.8rem;
         font-weight: 600;
     }
-
-    /* FACILITY ICONS IN CARD */
     .university-facilities {
         display: flex;
         flex-wrap: wrap;
         gap: 0.5rem;
         margin-top: auto;
         padding-top: 1rem;
-        border-top: 1px solid var(--gray-200);
+        border-top: 1px solid rgba(255,255,255,0.2);
+        justify-content: center;
     }
-
     .facility-icon-small {
         width: 35px;
         height: 35px;
         border-radius: 50%;
-        background: var(--black);
-        color: var(--white);
+        background: var(--white);
+        color: var(--black);
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 0.9rem;
-        border: 2px solid var(--black);
+        transition: all 0.3s ease;
     }
 
     .no-results {
         text-align: center;
         padding: 4rem 2rem;
     }
-
     .no-results i {
         font-size: 4rem;
         color: var(--gray-300);
         margin-bottom: 1rem;
     }
-
-    .pagination {
+    
+    /* CUSTOM PAGINATION */
+    .pagination-wrapper {
         margin-top: 3rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
     }
-
+    
+    .pagination {
+        display: flex;
+        gap: 0.5rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .pagination .page-item {
+        margin: 0;
+    }
+    
     .pagination .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 45px;
+        height: 45px;
+        padding: 0.5rem 0.75rem;
         border: 2px solid var(--black);
+        background: var(--white);
         color: var(--black);
         font-weight: 600;
-        margin: 0 0.25rem;
-        padding: 0.5rem 1rem;
+        font-size: 0.95rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border-radius: 0;
+    }
+
+    .page-item:first-child .page-link{
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    .page-item:last-child .page-link{
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
     }
 
     .pagination .page-link:hover {
         background: var(--black);
         color: var(--white);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
-
+    
     .pagination .page-item.active .page-link {
         background: var(--black);
+        color: var(--white);
         border-color: var(--black);
     }
-
+    
+    .pagination .page-item.disabled .page-link {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+    
+    .pagination .page-link svg {
+        width: 16px;
+        height: 16px;
+    }
+    
+    /* RESPONSIVE */
+    @media (max-width: 991px) {
+        .support-filters {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+    
     @media (max-width: 768px) {
+        .page-header {
+            padding: 2rem 0;
+        }
+        .page-header h1 {
+            font-size: 2rem;
+        }
+        .filter-toggle {
+            font-size: 1rem;
+            padding: 0.875rem 1.5rem;
+        }
         .support-filters {
             grid-template-columns: repeat(3, 1fr);
+        }
+        .support-filter-item {
+            padding: 0.75rem;
+        }
+        .support-icon {
+            width: 35px;
+            height: 35px;
+            font-size: 1rem;
+        }
+        .support-label {
+            font-size: 0.65rem;
+        }
+        .universities-grid {
+            padding: 2rem 0;
+        }
+        .university-logo {
+            height: 180px;
+        }
+        .university-name {
+            font-size: 1.1rem;
+        }
+        
+        .pagination-wrapper {
+            margin-top: 2rem;
+            gap: 0.25rem;
+        }
+        
+        .pagination .page-link {
+            min-width: 38px;
+            height: 38px;
+            padding: 0.4rem 0.6rem;
+            font-size: 0.85rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .page-header h1 {
+            font-size: 1.75rem;
+        }
+        .support-filters {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .support-filter-item {
+            padding: 0.65rem;
+        }
+        .university-logo {
+            height: 160px;
+        }
+        .university-card-body {
+            padding: 1.25rem;
+        }
+        
+        .pagination .page-link {
+            min-width: 35px;
+            height: 35px;
+            padding: 0.35rem 0.5rem;
+            font-size: 0.8rem;
         }
     }
 </style>
 @endpush
-
 @section('content')
-
 <!-- HEADER -->
 <section class="page-header">
     <div class="container">
@@ -289,11 +375,9 @@
                         ['name' => 'Alat bantu dengar', 'icon' => 'bi-ear'],
                         ['name' => 'LMS Aksesibel', 'icon' => 'bi-laptop'],
                         ['name' => 'Peta interaktif', 'icon' => 'bi-map'],
-                        ['name' => 'Lainnya', 'icon' => 'bi-three-dots'],
                     ];
                     $activeFilter = request('support');
                 @endphp
-
                 @foreach($facilities as $facility)
                     <a href="{{ $activeFilter === $facility['name'] ? route('landing.universities') : route('landing.universities', ['support' => $facility['name']]) }}" 
                        class="support-filter-item {{ $activeFilter === $facility['name'] ? 'active' : '' }}">
@@ -330,7 +414,6 @@
                         $submission = $university->acceptedSubmission;
                         $answers = $submission->values->pluck('value', 'question_id')->toArray();
                         
-                        // Q38: Fasilitas
                         $q38 = \App\Models\Question::where('code', 'q38')->first();
                         $universityFacilities = [];
                         
@@ -339,7 +422,6 @@
                             $universityFacilities = is_array($decoded) ? $decoded : [];
                         }
                         
-                        // Mapping fasilitas ke icon
                         $facilityIcons = [
                             'Petunjuk Braille' => 'bi-eye-slash',
                             'Blok pemandu' => 'bi-signpost',
@@ -356,15 +438,17 @@
                             'Lainnya' => 'bi-three-dots',
                         ];
                     @endphp
-
-                    <div class="col-md-4">
-                        <a href="{{ route('landing.university-detail', $university->slug) }}" class="university-card">
-                            <!-- Logo Placeholder -->
+                    <div class="col-sm-6 col-lg-4">
+                        <a href="{{ route('landing.university-detail', $university->slug) }}" class="university-card" target="_blank" rel="noopener noreferrer">
                             <div class="university-logo">
-                                <i class="bi bi-building"></i>
+                                @if($university->university_logo)
+                                    <img src="{{ asset('storage/' . $university->university_logo) }}" 
+                                         alt="{{ $university->university_name }}"
+                                         style="width: 100%; height: 100%; object-fit: contain; padding: 1rem;">
+                                @else
+                                    <img src="{{ asset('images/ideahub-logo.png') }}" alt="IdeaHub" style="width: 10rem; object-fit: contain; filter: grayscale(100%) brightness(0) invert(1);">
+                                @endif
                             </div>
-
-                            <!-- Card Body -->
                             <div class="university-card-body">
                                 <h3 class="university-name">{{ $university->university_name }}</h3>
                                 
@@ -372,8 +456,6 @@
                                     <span class="university-badge">{{ $university->university_type }}</span>
                                     <span class="university-badge">{{ $university->university_category }}</span>
                                 </div>
-
-                                <!-- Facility Icons -->
                                 <div class="university-facilities">
                                     @foreach($universityFacilities as $facility)
                                         @if(isset($facilityIcons[$facility]))
@@ -388,6 +470,12 @@
                     </div>
                 @endforeach
             </div>
+            
+            @if($universities->hasPages())
+                <div class="pagination-wrapper">
+                    {{ $universities->links() }}
+                </div>
+            @endif
         @else
             <div class="no-results">
                 <i class="bi bi-inbox"></i>
@@ -406,21 +494,12 @@
                 @endif
             </div>
         @endif
-
-        <!-- Pagination -->
-        @if($universities->hasPages())
-            <div class="d-flex justify-content-center">
-                {{ $universities->links() }}
-            </div>
-        @endif
     </div>
 </section>
-
 @endsection
 
 @push('scripts')
 <script>
-    // Toggle filter accordion
     const filterToggle = document.getElementById('filterToggle');
     const filterContent = document.getElementById('filterContent');
     

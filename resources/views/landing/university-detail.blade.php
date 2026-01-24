@@ -7,19 +7,20 @@
     .university-header {
         background: var(--black);
         color: var(--white);
-        padding: 3rem 0;
+        padding: 2.5rem 0;
     }
 
     .university-title {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
+        font-size: 2rem;
+        margin-bottom: 0.75rem;
+        animation: fadeInUp 0.8s ease;
     }
 
     .university-subtitle {
-        font-size: 1.1rem;
+        font-size: 0.95rem;
         color: rgba(255,255,255,0.85);
         display: flex;
-        gap: 2rem;
+        gap: 1.5rem;
         flex-wrap: wrap;
     }
 
@@ -29,36 +30,67 @@
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
         font-weight: 500;
-    }
-
-    .back-link:hover {
-        color: var(--white);
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
     }
 
     .content-section {
-        padding: 3rem 0;
+        padding: 2rem 0;
     }
 
-    .info-card {
-        border: 2px solid var(--black);
-        padding: 2rem;
-        margin-bottom: 2rem;
-        background: var(--white);
+    /* COMPACT 3 COLUMN LAYOUT */
+    .info-grid {
+        display: grid;
+        grid-template-columns: 250px 1fr 1fr;
+        gap: 2rem;
+        align-items: start;
     }
 
-    .info-card h4 {
-        font-size: 1.5rem;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
+    .logo-wrapper {
+        width: 100%;
+        max-width: 250px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 200px;
+    }
+
+    .logo-wrapper.no-logo {
+        background: var(--gray-300);
+    }
+
+    .logo-wrapper .default-logo {
+        width: 10rem;
+        object-fit: contain;
+        filter: brightness(0) invert(1);
+    }
+
+    .logo-wrapper img {
+        max-width: 100%;
+        max-height: 180px;
+        object-fit: contain;
+    }
+
+    .info-section {
+        margin-bottom: 0;
+    }
+
+    .info-section h4 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
         border-bottom: 2px solid var(--black);
     }
 
     .info-row {
         display: flex;
-        padding: 1rem 0;
+        padding: 0.5rem 0;
+        font-size: 0.85rem;
         border-bottom: 1px solid var(--gray-200);
+        transition: background-color 0.2s ease;
     }
 
     .info-row:last-child {
@@ -67,116 +99,251 @@
 
     .info-label {
         font-weight: 600;
-        width: 250px;
+        width: 45%;
         flex-shrink: 0;
+        font-size: 0.85rem;
     }
 
     .info-value {
         color: var(--gray-700);
+        flex: 1;
+        font-size: 0.85rem;
     }
 
-    .facilities-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 1rem;
-        margin-top: 1rem;
-    }
-
-    .facility-item {
-        border: 2px solid var(--black);
-        padding: 1rem;
-        text-align: center;
-        background: var(--white);
-        font-weight: 600;
-        font-size: 0.9rem;
-    }
-
-    .facility-item i {
-        font-size: 1.5rem;
-        margin-bottom: 0.5rem;
-        display: block;
-    }
-
-    .disability-types-table {
-        width: 100%;
-        margin-top: 1rem;
-    }
-
-    .disability-types-table td {
-        padding: 0.75rem;
-        border-bottom: 1px solid var(--gray-200);
-    }
-
-    .disability-types-table td:first-child {
-        font-weight: 600;
-        width: 60%;
-    }
-
-    .disability-types-table td:last-child {
-        text-align: right;
-        font-weight: 700;
-        color: var(--black);
-    }
-
-    .disability-accordion-header {
+    /* COMBINED INFO COLUMN */
+    .combined-info {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: pointer;
+        flex-direction: column;
+        gap: 1.5rem;
     }
 
-    .disability-accordion-header i {
-        transition: transform 0.3s;
-    }
-
-    .disability-accordion-header.active i {
-        transform: rotate(180deg);
-    }
-
-    .disability-accordion-content {
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.4s ease;
-    }
-
-    .disability-accordion-content.show {
-        max-height: 600px;
-        margin-top: 1.5rem;
-    }
-
+    /* FACILITIES COLUMN */
     .facility-icon-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        grid-template-columns: repeat(4, 1fr);
         gap: 1rem;
         margin-top: 1rem;
     }
 
     .facility-icon-item {
-        /* border: 2px solid var(--black); */
-        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         text-align: center;
-        font-size: 0.8rem;
-        font-weight: 600;
+        padding: 0.5rem;
+        transition: all 0.3s ease;
     }
 
-    .facility-icon-item i {
-        font-size: 1.5rem;
+    .facility-icon-circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: var(--black);
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
         margin-bottom: 0.5rem;
-        display: block;
+        transition: all 0.3s ease;
+    }
+
+    .facility-icon-item:hover .facility-icon-circle {
+        background: var(--gray-900);
+    }
+
+    .facility-icon-circle i {
+        font-size: 1.3rem;
+    }
+
+    .facility-label {
+        font-size: 0.7rem;
+        font-weight: 600;
+        line-height: 1.2;
+    }
+
+    .cta-section {
+        text-align: center;
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 2px solid var(--gray-200);
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1200px) {
+        .info-grid {
+            grid-template-columns: 220px 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .logo-wrapper {
+            max-width: 220px;
+            min-height: 180px;
+        }
+
+        .facility-icon-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .facility-icon-circle {
+            width: 45px;
+            height: 45px;
+        }
+
+        .facility-icon-circle i {
+            font-size: 1.2rem;
+        }
+    }
+
+    @media (max-width: 991px) {
+        .info-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .logo-column {
+            position: static;
+            text-align: center;
+        }
+
+        .logo-wrapper {
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .combined-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .facility-icon-grid {
+            grid-template-columns: repeat(5, 1fr);
+        }
+
+        .facility-icon-circle {
+            width: 50px;
+            height: 50px;
+        }
+
+        .facility-icon-circle i {
+            font-size: 1.3rem;
+        }
     }
 
     @media (max-width: 768px) {
+        .university-header {
+            padding: 2rem 0;
+        }
+
         .university-title {
-            font-size: 1.75rem;
+            font-size: 1.5rem;
+        }
+
+        .university-subtitle {
+            font-size: 0.85rem;
+            gap: 1rem;
+        }
+
+        .content-section {
+            padding: 1.5rem 0;
+        }
+
+        .combined-info {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .info-section h4 {
+            font-size: 1rem;
         }
 
         .info-row {
             flex-direction: column;
+            padding: 0.6rem 0;
+            font-size: 0.8rem;
         }
 
         .info-label {
             width: 100%;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
+            font-size: 0.8rem;
+        }
+
+        .info-value {
+            font-size: 0.8rem;
+        }
+
+        .facility-icon-grid {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+        }
+
+        .facility-icon-circle {
+            width: 40px;
+            height: 40px;
+        }
+
+        .facility-icon-circle i {
+            font-size: 1.1rem;
+        }
+
+        .facility-label {
+            font-size: 0.65rem;
+        }
+
+        .cta-section {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .university-title {
+            font-size: 1.35rem;
+        }
+
+        .university-subtitle {
+            flex-direction: column;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .logo-wrapper {
+            min-height: 150px;
+        }
+
+        .logo-wrapper img {
+            max-height: 130px;
+        }
+
+        .facility-icon-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.6rem;
+        }
+
+        .facility-icon-circle {
+            width: 38px;
+            height: 38px;
+        }
+
+        .facility-icon-circle i {
+            font-size: 1rem;
+        }
+
+        .facility-label {
+            font-size: 0.6rem;
         }
     }
 </style>
@@ -184,17 +351,12 @@
 
 @section('content')
 
-<!-- HEADER -->
 <section class="university-header">
     <div class="container">
-        <a href="{{ route('landing.universities') }}" class="back-link">
-            <i class="bi bi-arrow-left"></i> Kembali ke Browse Universities
-        </a>
-        
         <h1 class="university-title">{{ $university->university_name }}</h1>
         
         <div class="university-subtitle">
-            <span><i class="bi bi-geo-alt-fill"></i> {{ $university->university_type }}</span>
+            <span><i class="bi bi-mortarboard"></i> {{ $university->university_type }}</span>
             <span><i class="bi bi-building"></i> {{ $university->university_category }}</span>
             @if($university->phone_number)
                 <span><i class="bi bi-telephone-fill"></i> {{ $university->phone_number }}</span>
@@ -203,199 +365,140 @@
     </div>
 </section>
 
-<!-- CONTENT -->
 <section class="content-section">
     <div class="container">
-        
-        <!-- BASIC INFO -->
-        <div class="info-card">
-            <h4><i class="bi bi-info-circle-fill me-2"></i>Informasi Umum</h4>
+        <div class="info-grid">
             
-            <div class="info-row">
-                <div class="info-label">Nama Perguruan Tinggi</div>
-                <div class="info-value">{{ $university->university_name }}</div>
-            </div>
-            
-            <div class="info-row">
-                <div class="info-label">Jenis PT</div>
-                <div class="info-value">{{ $university->university_type }}</div>
-            </div>
-            
-            <div class="info-row">
-                <div class="info-label">Kategori</div>
-                <div class="info-value">{{ $university->university_category }}</div>
-            </div>
-            
-            <div class="info-row">
-                <div class="info-label">Program Studi PLB/Pendidikan Khusus</div>
-                <div class="info-value">
-                    {{ $university->has_disability_study_program ? 'Ya, tersedia' : 'Tidak tersedia' }}
-                </div>
-            </div>
-            
-            @if($university->phone_number)
-                <div class="info-row">
-                    <div class="info-label">Kontak</div>
-                    <div class="info-value">{{ $university->phone_number }}</div>
-                </div>
-            @endif
-        </div>
-
-        <!-- DISABILITY STATISTICS -->
-        @php
-            $q6 = $questions->get('q6');
-            $q6a = $questions->get('q6a');
-            $totalDisability = $q6 && isset($answers[$q6->id]) ? $answers[$q6->id] : 'N/A';
-            $disabilitas = $answers[$q6a->id] ?? [];
-            // $disabilityTypes = $q6a && isset($answers[$q6a->id]) ? $answers[$q6a->id] : [];
-            $disabilityTypes = [];
-            if ($q6a && isset($answers[$q6a->id])) {
-                if (is_string($answers[$q6a->id])) {
-                    $decoded = json_decode($answers[$q6a->id], true);
-                    $disabilityTypes = is_array($decoded) ? $decoded : [];
-                } elseif (is_array($answers[$q6a->id])) {
-                    $disabilityTypes = $answers[$q6a->id];
-                }
-            }
-        @endphp
-
-        @php
-            $labelDisabilitas = [
-                0 => 'Tunanetra Total',
-                1 => 'Low Vision',
-                2 => 'Buta Warna',
-                3 => 'Tunarungu Total',
-                4 => 'Kesulitan Mendengar',
-                5 => 'Disabilitas fisik sedang',
-                6 => 'Disabilitas fisik berat',
-                7 => 'Disabilitas fisik ringan',
-                8 => 'Disabilitas intelektual',
-                9 => 'Spektrum autisme',
-                10 => 'ADHD',
-                11 => 'Gangguan Psikososial',
-                12 => 'Multidisabilitas',
-
-            ];
-        @endphp
-
-        <div class="info-card">
-            <div class="disability-accordion-header" id="disabilityToggle">
-                <h4 class="mb-0">
-                    <i class="bi bi-people-fill me-2"></i>
-                    Data Mahasiswa Disabilitas
-                </h4>
-
-                <div class="d-flex align-items-center gap-3">
-                    <strong style="font-size: 1.25rem;">{{ $totalDisability }}</strong>
-                    <i class="bi bi-chevron-down"></i>
-                </div>
-            </div>
-
-            <div class="disability-accordion-content" id="disabilityContent">
-                @if(is_array($disabilitas) && count($disabilitas))
-                    <table class="disability-types-table">
-                        @foreach($disabilitas as $kode => $jumlah)
-                            @if($jumlah > 0)
-                                <tr>
-                                    <td>{{ $labelDisabilitas[$kode] ?? 'Lainnya' }}</td>
-                                    <td>{{ $jumlah }}</td>
-                                </tr>
-                            @endif
-                        @endforeach
-                    </table>
-                @else
-                    <p class="text-secondary">Data rincian belum tersedia</p>
-                @endif
-            </div>
-        </div>
-
-
-        <!-- ULD -->
-        @php
-            $q9 = $questions->get('q9');
-            $hasULD = $q9 && isset($answers[$q9->id]) ? $answers[$q9->id] : 'N/A';
-        @endphp
-
-        <div class="info-card">
-            <h4><i class="bi bi-hospital-fill me-2"></i>Unit Layanan Disabilitas</h4>
-            
-            <div class="info-row">
-                <div class="info-label">Ketersediaan ULD atau Unit Serupa</div>
-                <div class="info-value">
-                    @if($hasULD === 'Sudah')
-                        <span style="color: #28a745; font-weight: 600;">
-                            <i class="bi bi-check-circle-fill"></i> Sudah Tersedia
-                        </span>
+            <!-- LOGO COLUMN -->
+            <div class="logo-column">
+                <div class="logo-wrapper {{ !$university->university_logo ? 'no-logo' : '' }}">
+                    @if($university->university_logo)
+                        <img src="{{ asset('storage/' . $university->university_logo) }}" 
+                             alt="{{ $university->university_name }}">
                     @else
-                        <span style="color: #dc3545; font-weight: 600;">
-                            <i class="bi bi-x-circle-fill"></i> Belum Tersedia
-                        </span>
+                        <img src="{{ asset('images/ideahub-logo.png') }}" 
+                             alt="IdeaHub"
+                             class="default-logo">
                     @endif
                 </div>
             </div>
-        </div>
 
-        <!-- FACILITIES -->
-        @php
-            $q38 = $questions->get('q38');
-            $facilities = $q38 && isset($answers[$q38->id]) ? $answers[$q38->id] : [];
-            if (!is_array($facilities)) {
-                $facilities = [];
-            }
-        @endphp
-        @php
-        $facilityIcons = [
-            'Petunjuk Braille' => 'bi-eye-slash',
-            'Blok pemandu' => 'bi-signpost',
-            'Toilet disabilitas' => 'bi-person-wheelchair',
-            'Lift' => 'bi-arrow-up-square',
-            'Ramp' => 'bi-arrow-up-right',
-            'Parkir disabilitas' => 'bi-p-square',
-            'Layanan mobilitas' => 'bi-bus-front',
-            'Text-to-Speech' => 'bi-volume-up',
-            'Screen reader' => 'bi-eye',
-            'Alat bantu dengar' => 'bi-ear',
-            'LMS Aksesibel' => 'bi-laptop',
-            'Peta interaktif' => 'bi-map',
-            'Lainnya' => 'bi-three-dots',
-        ];
-        @endphp
-
-        <div class="info-card">
-            <h4><i class="bi bi-hammer me-2"></i>Fasilitas Pendukung</h4>
-
-            @if(is_array($facilities) && count($facilities))
-                <div class="facility-icon-grid">
-                    @foreach($facilities as $facility)
-                        <div class="facility-icon-item">
-                            <i class="bi {{ $facilityIcons[$facility] ?? 'bi-three-dots' }}"></i>
-                            {{ $facility }}
+            <!-- COMBINED INFO COLUMN (Info Umum + ULD) -->
+            <div class="combined-info">
+                <!-- Info Umum -->
+                <div class="info-section">
+                    <h4><i class="bi bi-info-circle-fill me-2"></i>Informasi Umum</h4>
+                    
+                    <div class="info-row">
+                        <div class="info-label">Nama PT</div>
+                        <div class="info-value">{{ $university->university_name }}</div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <div class="info-label">Jenis</div>
+                        <div class="info-value">{{ $university->university_type }}</div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <div class="info-label">Kategori</div>
+                        <div class="info-value">{{ $university->university_category }}</div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <div class="info-label">Prodi PLB</div>
+                        <div class="info-value">
+                            {{ $university->has_disability_study_program ? 'Ya' : 'Tidak' }}
                         </div>
-                    @endforeach
+                    </div>
+                    
+                    @if($university->phone_number)
+                        <div class="info-row">
+                            <div class="info-label">Kontak</div>
+                            <div class="info-value">{{ $university->phone_number }}</div>
+                        </div>
+                    @endif
                 </div>
-            @else
-                <p class="text-secondary" style="margin-top: 1rem;">Data fasilitas belum tersedia</p>
-            @endif
+
+                <!-- ULD -->
+                @php
+                    $q9 = $questions->get('q9');
+                    $hasULD = $q9 && isset($answers[$q9->id]) ? $answers[$q9->id] : 'N/A';
+                @endphp
+
+                <div class="info-section">
+                    <h4><i class="bi bi-hospital-fill me-2"></i>Unit Layanan Disabilitas</h4>
+                    
+                    <div class="info-row">
+                        <div class="info-label">Ketersediaan ULD</div>
+                        <div class="info-value">
+                            @if($hasULD === 'Sudah')
+                                <span style="color: #28a745; font-weight: 600; font-size: 0.85rem;">
+                                    <i class="bi bi-check-circle-fill"></i> Tersedia
+                                </span>
+                            @else
+                                <span style="color: #dc3545; font-weight: 600; font-size: 0.85rem;">
+                                    <i class="bi bi-x-circle-fill"></i> Belum
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FACILITIES COLUMN -->
+            <div class="info-section">
+                <h4><i class="bi bi-patch-check me-2"></i>Fasilitas Pendukung</h4>
+
+                @php
+                    $q38 = $questions->get('q38');
+                    $facilities = $q38 && isset($answers[$q38->id]) ? $answers[$q38->id] : [];
+                    if (!is_array($facilities)) {
+                        $facilities = [];
+                    }
+                    
+                    $facilityIcons = [
+                        'Petunjuk Braille' => 'bi-eye-slash',
+                        'Blok pemandu' => 'bi-signpost',
+                        'Toilet disabilitas' => 'bi-person-wheelchair',
+                        'Lift' => 'bi-arrow-up-square',
+                        'Ramp' => 'bi-arrow-up-right',
+                        'Parkir disabilitas' => 'bi-p-square',
+                        'Layanan mobilitas' => 'bi-bus-front',
+                        'Text-to-Speech' => 'bi-volume-up',
+                        'Screen reader' => 'bi-eye',
+                        'Alat bantu dengar' => 'bi-ear',
+                        'LMS Aksesibel' => 'bi-laptop',
+                        'Peta interaktif' => 'bi-map',
+                        'Lainnya' => 'bi-three-dots',
+                    ];
+                @endphp
+
+                @if(is_array($facilities) && count($facilities))
+                    <div class="facility-icon-grid">
+                        @foreach($facilities as $facility)
+                            <div class="facility-icon-item">
+                                <div class="facility-icon-circle">
+                                    <i class="bi {{ $facilityIcons[$facility] ?? 'bi-three-dots' }}"></i>
+                                </div>
+                                <div class="facility-label">{{ $facility }}</div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="text-secondary" style="margin-top: 1rem; font-size: 0.85rem;">Data belum tersedia</p>
+                @endif
+            </div>
+
         </div>
 
         <!-- CTA -->
-        <div class="text-center mt-5 pt-4" style="border-top: 2px solid var(--gray-200);">
-            <p class="text-secondary mb-3">Tertarik untuk mendaftar?</p>
-            <a href="{{ route('register') }}" class="btn-primary-custom">
-                Daftarkan Kampus Anda <i class="bi bi-arrow-right ms-2"></i>
+        <div class="cta-section">
+            <p class="text-secondary mb-3" style="font-size: 0.9rem;">Kampus Anda Belum Terdata?</p>
+            <a href="{{ route('register') }}" class="btn-outline-custom">
+                Laporkan Kampus Anda <i class="bi bi-arrow-right ms-2"></i>
             </a>
         </div>
     </div>
 </section>
-
-<script>
-    const disabilityToggle = document.getElementById('disabilityToggle');
-    const disabilityContent = document.getElementById('disabilityContent');
-
-    disabilityToggle.addEventListener('click', () => {
-        disabilityToggle.classList.toggle('active');
-        disabilityContent.classList.toggle('show');
-    });
-</script>
 
 @endsection

@@ -64,6 +64,12 @@ class LandingController extends Controller
 
         $universities->appends($request->all());
 
+        $universities = $query->with('acceptedSubmission')
+                      ->orderBy('university_name', 'asc')
+                      ->paginate(9);
+
+        $universities->appends($request->all());
+
         return view('landing.universities', compact('universities', 'supportTypes'));
     }
 
