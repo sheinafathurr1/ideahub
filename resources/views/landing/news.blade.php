@@ -3,7 +3,7 @@
 @push('styles')
 <style>
     .page-header {
-        background: var(--black);
+        background: var(--maroon-primary);
         color: var(--white);
         padding: 3rem 0;
         text-align: center;
@@ -18,7 +18,7 @@
     .news-card {
         overflow: hidden;
         height: 100%;
-        background: var(--black);
+        background: var(--maroon-primary);
         color: var(--white);
         text-decoration: none;
         display: block;
@@ -35,7 +35,7 @@
     .news-card-placeholder {
         width: 100%;
         height: 250px;
-        background: var(--gray-300);
+        background: #d0d3d4;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -100,9 +100,9 @@
         min-width: 45px;
         height: 45px;
         padding: 0.5rem 0.75rem;
-        border: 2px solid var(--black);
+        border: 2px solid var(--maroon-primary);
         background: var(--white);
-        color: var(--black);
+        color: var(--maroon-primary);
         font-weight: 600;
         font-size: 0.95rem;
         text-decoration: none;
@@ -121,9 +121,9 @@
     }
     
     .pagination .page-item.active .page-link {
-        background: var(--black);
-        color: var(--white);
-        border-color: var(--black);
+        background: var(--orange-primary);
+        color: var(--maroon-primary);
+        border-color: var(--orange-primary);
     }
     
     .pagination .page-item.disabled .page-link {

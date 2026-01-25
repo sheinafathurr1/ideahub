@@ -6,7 +6,7 @@
 <style>
     /* HERO SECTION */
     .hero-section {
-        background: var(--black);
+        background: var(--maroon-primary);
         color: var(--white);
         padding: 5rem 0;
         text-align: center;
@@ -37,7 +37,7 @@
     .news-card {
         overflow: hidden;
         height: 100%;
-        background: var(--black);
+        background: var(--maroon-primary);
         color: var(--white);
         text-decoration: none;
         display: block;
@@ -75,6 +75,24 @@
         transition: transform 0.3s ease;
     }
 
+    .btn-news {
+        background: var(--maroon-primary);
+        color: var(--white);
+        padding: 0.75rem 1.5rem;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-news:hover {
+        background: var(--orange-primary);
+        color: var(--maroon-primary);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
     /* ABOUT SECTION */
     .about-section {
         padding: 4rem 0;
@@ -101,7 +119,7 @@
 
     .about-logo i {
         font-size: 5rem;
-        color: var(--black);
+        color: var(--maroon-primary);
     }
 
     /* STAFF GUIDE SECTION */
@@ -116,6 +134,7 @@
     }
 
     .staff-guide-content h2 {
+        color: var(--gray-900);
         font-size: 1.75rem;
         margin-bottom: 1rem;
     }
@@ -127,7 +146,7 @@
     }
 
     .staff-guide-content a {
-        background: var(--black);
+        background: var(--maroon-primary);
         color: var(--white);
         padding: 1rem 2rem;
         text-decoration: none;
@@ -136,18 +155,18 @@
         align-items: center;
         gap: 0.5rem;
         transition: all 0.3s ease;
-        border: 2px solid var(--black);
     }
 
     .staff-guide-content a:hover {
-        background: var(--gray-900);
+        background: var(--orange-primary);
+        color: var(--maroon-primary);
         box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
 
     /* FUNDED BY SECTION */
     .funded-by-section {
-        background: var(--black);
-        color: var(--white);
+        background: var(--white);
+        color: black;
         padding: 5rem 0;
     }
 
@@ -347,7 +366,7 @@
 
         @if($latestNews->count() > 0)
             <div class="text-center">
-                <a href="{{ route('landing.news') }}" class="btn-outline-custom">
+                <a href="{{ route('landing.news') }}" class="btn-news">
                     Lihat Semua Berita <i class="bi bi-arrow-right ms-2"></i>
                 </a>
             </div>
@@ -404,14 +423,14 @@
             </div>
             <div class="col-md-8">
                 <div class="partners-grid text-md-start">
-                    <div class="partner-logo te">
+                    <div class="partner-logo">
                         <img src="{{ asset('images/british-council.png') }}" alt="British Council">
                     </div>
                     <div class="partner-logo">
                         <img src="{{ asset('images/telu-logo.png') }}" alt="Telkom University">
                     </div>
                     <div class="partner-logo">
-                        <img src="{{ asset('images/leicester-logo.png') }}" alt="University of Leicester">
+                        <img src="{{ asset('images/logo-lancester-u.png') }}" alt="University of Lancester">
                     </div>
                 </div>
             </div>

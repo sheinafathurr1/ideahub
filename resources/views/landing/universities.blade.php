@@ -3,7 +3,7 @@
 @push('styles')
 <style>
     .page-header {
-        background: var(--black);
+        background: var(--maroon-primary);
         color: var(--white);
         padding: 3rem 0;
         text-align: center;
@@ -19,7 +19,7 @@
         background: var(--white);
     }
     .filter-toggle {
-        background: var(--black);
+        background: var(--maroon-primary);
         color: var(--white);
         border: none;
         padding: 1rem 2rem;
@@ -41,13 +41,14 @@
         max-height: 0;
         overflow: hidden;
         padding: 0 1rem;
-        transition: max-height 0.4s ease-out, padding 0.3s ease-out;
-        background: var(--white);
+        background: var(--maroon-primary);
+        opacity: 0;
+        transition: max-height 0.4s ease, opacity 0.25s ease, padding 0.3s ease;
     }
     .filter-content.show {
-        max-height: 800px;
+        max-height: 600px;
         padding: 2rem 1rem;
-        background: var(--black);
+        opacity: 1;
     }
     .support-filters {
         display: grid;
@@ -60,7 +61,7 @@
         align-items: center;
         text-align: center;
         padding: 1rem;
-        background: var(--black);
+        background: transparent;
         color: var(--white);
         cursor: pointer;
         transition: all 0.3s ease;
@@ -68,8 +69,8 @@
     }
 
     .support-filter-item.active {
-        background: var(--white);
-        color: var(--black);
+        background: var(--maroon-primary);
+        color: var(--orange-primary);
         transform: scale(1.05);
         z-index: 2;
     }
@@ -78,7 +79,7 @@
         height: 40px;
         border-radius: 50%;
         background: var(--white);
-        color: var(--black);
+        color: var(--maroon-primary);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -87,7 +88,7 @@
         transition: all 0.3s ease;
     }
     .support-filter-item.active .support-icon {
-        background: var(--black);
+        background: var(--orange-primary);
         color: var(--white);
     }
     .support-label {
@@ -102,8 +103,8 @@
     }
     .university-card {
         overflow: hidden;
-        background: var(--white);
-        color: var(--black);
+        background: var(--maroon-primary);
+        color: var(--white);
         height: 100%;
         display: flex;
         flex-direction: column;
@@ -114,7 +115,7 @@
     .university-logo {
         width: 100%;
         height: 200px;
-        background: var(--gray-300);
+        background: #d0d3d4;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -130,7 +131,7 @@
         flex-grow: 1;
         display: flex;
         flex-direction: column;
-        background: var(--black);
+        background: var(--maroon-primary);
         color: var(--white);
     }
     .university-name {
@@ -149,8 +150,8 @@
         justify-content: center;
     }
     .university-badge {
-        background: var(--white);
-        color: var(--black);
+        background: var(--orange-primary);
+        color: var(--maroon-primary);
         padding: 0.25rem 0.75rem;
         font-size: 0.8rem;
         font-weight: 600;
@@ -169,7 +170,7 @@
         height: 35px;
         border-radius: 50%;
         background: var(--white);
-        color: var(--black);
+        color: var(--maroon-primary);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -215,9 +216,9 @@
         min-width: 45px;
         height: 45px;
         padding: 0.5rem 0.75rem;
-        border: 2px solid var(--black);
+        border: 2px solid var(--maroon-primary);
         background: var(--white);
-        color: var(--black);
+        color: var(--maroon-primary);
         font-weight: 600;
         font-size: 0.95rem;
         text-decoration: none;
@@ -236,16 +237,16 @@
     }
 
     .pagination .page-link:hover {
-        background: var(--black);
+        background: var(--maroon-primary);
         color: var(--white);
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
     
     .pagination .page-item.active .page-link {
-        background: var(--black);
+        background: var(--orange-primary);
         color: var(--white);
-        border-color: var(--black);
+        border-color: var(--orange-primary);
     }
     
     .pagination .page-item.disabled .page-link {

@@ -13,8 +13,11 @@
     
     <style>
         :root {
-            --black: #000000;
-            --white: #ffffff;
+            --maroon-primary: #BA1D2F;
+            --red-accent: #D3273E;
+            --orange-primary: #F2C75C;
+            --gray-light: #D0D3D4;
+            --white: #FFFFFF;
             --gray-100: #f8f9fa;
             --gray-200: #e9ecef;
             --gray-300: #dee2e6;
@@ -30,8 +33,7 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            color: var(--black);
-            background: var(--white);
+            color: var(--orange-primary);
             line-height: 1.6;
             overflow-x: hidden;
         }
@@ -49,7 +51,7 @@
 
         /* NAVBAR */
         .navbar-landing {
-            background: var(--black);
+            background: var(--maroon-primary);
             padding: 1.5rem 0;
             border-bottom: none;
             transition: padding 0.3s ease;
@@ -87,8 +89,8 @@
         }
 
         .navbar-landing .btn-login {
-            background: var(--black);
-            color: var(--white);
+            background: var(--orange-primary);
+            color: var(--maroon-primary);
             padding: 0.5rem 1.5rem;
             font-weight: 600;
             transition: all 0.3s ease;
@@ -97,13 +99,13 @@
 
         .navbar-landing .btn-login:hover {
             background: var(--white);
-            color: var(--black);
+            color: var(--maroon-primary);
             transform: translateY(-2px);
         }
 
         /* FOOTER */
         .footer-landing {
-            background: var(--black);
+            background: var(--maroon-primary);
             color: var(--white);
             padding: 0 0 2rem;
         }
@@ -115,7 +117,7 @@
         }
 
         .footer-landing a {
-            color: var(--white);
+            color: var(--black);
             text-decoration: none;
             display: block;
             padding: 0.25rem 0;
@@ -131,7 +133,7 @@
         .footer-bottom {
             text-align: center;
             font-size: 0.9rem;
-            color: rgba(255,255,255,0.7);
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .footer-bottom a {
@@ -142,6 +144,7 @@
         .section-title {
             font-size: 2rem;
             margin-bottom: 1rem;
+            color: var(--gray-900);
         }
 
         .section-subtitle {
@@ -151,26 +154,25 @@
         }
 
         .btn-primary-custom {
-            background: var(--black);
-            color: var(--white);
+            background: var(--orange-primary);
+            color: var(--maroon-primary);
             padding: 0.75rem 2rem;
             font-weight: 600;
             transition: all 0.3s ease;
             text-decoration: none;
             display: inline-block;
-            border: 2px solid var(--black);
         }
 
         .btn-primary-custom:hover {
             background: var(--white);
-            color: var(--black);
+            color: var(--maroon-primary);
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
 
         .btn-outline-custom {
             background: var(--white);
-            color: var(--black);
+            color: var(--maroon-primary);
             padding: 0.75rem 2rem;
             font-weight: 600;
             transition: all 0.3s ease;
@@ -179,10 +181,10 @@
         }
 
         .btn-outline-custom:hover {
-            background: var(--black);
-            color: var(--white);
+            background: var(--orange-primary);
+            color: var(--maroon-primary);
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
 
         /* RESPONSIVE */
@@ -254,7 +256,7 @@
                     <img src="{{ asset('images/ideahub-logo.png') }}" alt="IdeaHub" class="navbar-brand-logo">
                 @else
                     <div style="width: 40px; height: 40px; background: var(--white); display: flex; align-items: center; justify-content: center;">
-                        <i class="bi bi-grid-fill" style="color: var(--black);"></i>
+                        <i class="bi bi-grid-fill" style="color: var(--white);"></i>
                     </div>
                 @endif
             </a>
@@ -287,14 +289,14 @@
     <!-- FOOTER -->
     <footer class="footer-landing">
         <div class="container">
-            <div class="row" style="border-top: 1px solid rgba(255,255,255,0.2); padding: 3rem 0;">
+            <div class="row" style="padding: 3rem 0;">
                 <div class="col-md-4 mb-4 mb-md-0">
                     <div class="d-flex align-items-center gap-3">
                         @if(file_exists(public_path('images/ideahub-logo.png')))
                             <img src="{{ asset('images/ideahub-logo.png') }}" alt="IdeaHub" style="width: 8rem; object-fit: contain; filter: grayscale(100%) brightness(0) invert(1);">
                         @else
                             <div style="width: 60px; height: 60px; background: var(--white); display: flex; align-items: center; justify-content: center;">
-                                <i class="bi bi-grid-fill" style="color: var(--black); font-size: 2rem;"></i>
+                                <i class="bi bi-grid-fill" style="color: var(--white); font-size: 2rem;"></i>
                             </div>
                         @endif
                     </div>

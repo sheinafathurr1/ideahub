@@ -5,7 +5,7 @@
 @push('styles')
 <style>
     .university-header {
-        background: var(--black);
+        background: var(--maroon-primary);
         color: var(--white);
         padding: 2.5rem 0;
     }
@@ -59,7 +59,7 @@
     }
 
     .logo-wrapper.no-logo {
-        background: var(--gray-300);
+        background: #d0d3d4;
     }
 
     .logo-wrapper .default-logo {
@@ -79,10 +79,11 @@
     }
 
     .info-section h4 {
+        color: var(--maroon-primary);
         font-size: 1.1rem;
         margin-bottom: 1rem;
         padding-bottom: 0.5rem;
-        border-bottom: 2px solid var(--black);
+        border-bottom: 2px solid var(--maroon-primary);
     }
 
     .info-row {
@@ -98,6 +99,7 @@
     }
 
     .info-label {
+        color: var(--gray-900);
         font-weight: 600;
         width: 45%;
         flex-shrink: 0;
@@ -138,7 +140,7 @@
         width: 50px;
         height: 50px;
         border-radius: 50%;
-        background: var(--black);
+        background: var(--maroon-primary);
         color: var(--white);
         display: flex;
         align-items: center;
@@ -147,15 +149,12 @@
         transition: all 0.3s ease;
     }
 
-    .facility-icon-item:hover .facility-icon-circle {
-        background: var(--gray-900);
-    }
-
     .facility-icon-circle i {
         font-size: 1.3rem;
     }
 
     .facility-label {
+        color: var(--gray-900);
         font-size: 0.7rem;
         font-weight: 600;
         line-height: 1.2;

@@ -24,6 +24,7 @@
         margin-bottom: 1rem;
         line-height: 1.2;
         animation: fadeInUp 0.8s ease;
+        color: var(--gray-900);
     }
 
     .article-meta {
@@ -51,6 +52,8 @@
         padding: 2rem 0;
         max-width: 800px;
         margin: 0 auto;
+        color: var(--gray-900);
+        text-align: justify;
     }
 
     .article-content p {
@@ -74,14 +77,14 @@
     }
 
     .article-link-section a {
-        color: var(--black);
+        color: var(--maroon-primary);
         text-decoration: underline;
         font-weight: 500;
         transition: all 0.3s ease;
     }
 
     .article-link-section a:hover {
-        color: var(--gray-700);
+        color: var(--red-accent);
     }
 
     .article-footer {
