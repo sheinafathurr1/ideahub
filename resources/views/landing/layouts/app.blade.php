@@ -23,6 +23,7 @@
             --gray-300: #dee2e6;
             --gray-700: #495057;
             --gray-900: #212529;
+            --black: #1a1a1a;
         }
 
         * {
@@ -33,7 +34,7 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            color: var(--orange-primary);
+            color: var(--gray-900);
             line-height: 1.6;
             overflow-x: hidden;
         }
@@ -117,7 +118,7 @@
         }
 
         .footer-landing a {
-            color: var(--black);
+            color: var(--white);
             text-decoration: none;
             display: block;
             padding: 0.25rem 0;
@@ -133,11 +134,13 @@
         .footer-bottom {
             text-align: center;
             font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.7);
+            color: var(--white);           /* putih solid di atas maroon = ~4.8:1 */
         }
 
         .footer-bottom a {
             display: inline;
+            color: var(--white);           /* pastikan link footer-bottom juga putih */
+            text-decoration: underline;   /* underline agar link tetap bisa dibedakan tanpa warna */
         }
 
         /* UTILITY */
@@ -155,9 +158,9 @@
 
         .btn-primary-custom {
             background: var(--orange-primary);
-            color: var(--maroon-primary);
+            color: var(--black);           /* kontras #1a1a1a di atas #F2C75C = ~8.5:1 */
             padding: 0.75rem 2rem;
-            font-weight: 600;
+            font-weight: 700;
             transition: all 0.3s ease;
             text-decoration: none;
             display: inline-block;
@@ -198,7 +201,7 @@
             }
 
             .navbar-landing .navbar-collapse {
-                background: var(--black);
+                background: var(--maroon-primary);
                 padding: 1rem;
                 margin-top: 1rem;
                 border-top: 1px solid rgba(255,255,255,0.1);
@@ -261,8 +264,9 @@
                 @endif
             </a>
             
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Buka menu navigasi">
+                <span class="navbar-toggler-icon" aria-hidden="true"></span>
             </button>
             
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
