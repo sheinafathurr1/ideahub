@@ -8,6 +8,7 @@ use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\LandingController;
+use App\Http\Controllers\ProfileController;
 
 // --- 1. HALAMAN UTAMA ---
 // Route::get('/', function () {
@@ -40,6 +41,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/survey/save-draft', [SurveyController::class, 'saveDraft'])->name('survey.save_draft');
     Route::post('/survey/submit', [SurveyController::class, 'store'])->name('survey.store');
     Route::get('/survey/history/{id}', [SurveyController::class, 'show'])->name('survey.show');
+
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {

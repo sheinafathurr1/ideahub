@@ -43,6 +43,9 @@
             <a href="#" class="brand-text"><i class="bi bi-grid-fill me-2"></i> IdeaHub Dashboard</a>
             <div class="d-flex align-items-center gap-3">
                 <span class="d-none d-md-block small text-secondary">Halo, {{ Auth::user()->name }}</span>
+                <a href="{{ route('profile.edit') }}" class="btn btn-outline-dark rounded-pill px-4 fw-bold">
+                    <i class="bi bi-person-gear me-1"></i> Ubah Profil
+                </a>
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="btn btn-sm btn-outline-danger px-3 rounded-2">Keluar</button>
