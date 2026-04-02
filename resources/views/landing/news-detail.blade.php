@@ -70,7 +70,7 @@
         border-bottom: 1px solid var(--gray-200);
     }
 
-    .article-link-section h5 {
+    .article-link-section h2 {
         font-size: 1rem;
         margin-bottom: 0.75rem;
         font-weight: 700;
@@ -158,7 +158,7 @@
             padding: 1.25rem 0;
         }
 
-        .article-link-section h5 {
+        .article-link-section h2 {
             font-size: 0.95rem;
         }
 
@@ -241,7 +241,7 @@
 
         @if($news->link_url && $news->link_text)
             <div class="article-link-section">
-                <h5>Referensi Tambahan</h5>
+                <h2>Referensi Tambahan</h2>
                 <p class="text-secondary mb-2" style="font-size: 0.95rem;">
                     Untuk informasi lebih lengkap, kunjungi:
                 </p>

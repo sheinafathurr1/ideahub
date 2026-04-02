@@ -45,7 +45,7 @@
     }
     .news-card-date {
         font-size: 0.85rem;
-        color: rgba(255,255,255,0.7);
+        color: rgba(255,255,255,0.9);
         margin-bottom: 1rem;
         font-weight: 600;
     }
@@ -124,6 +124,7 @@
         background: var(--orange-primary);
         color: var(--maroon-primary);
         border-color: var(--orange-primary);
+        font-weight: 700;
     }
     
     .pagination .page-item.disabled .page-link {
@@ -255,7 +256,7 @@
                                     {{ $item->published_at->format('d M Y') }}
                                 </div>
                                 
-                                <h3 class="news-card-title">{{ $item->title }}</h3>
+                                <h2 class="news-card-title">{{ $item->title }}</h2>
                                 
                                 @if($item->excerpt)
                                     <p class="news-card-excerpt">
@@ -280,7 +281,7 @@
         @else
             <div class="no-news">
                 <i class="bi bi-newspaper"></i>
-                <h4>Belum ada berita tersedia</h4>
+                <h2>Belum ada berita tersedia</h2>
                 <p class="text-secondary">Berita akan segera ditambahkan</p>
             </div>
         @endif

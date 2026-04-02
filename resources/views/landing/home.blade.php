@@ -55,7 +55,7 @@
         padding: 1.5rem;
     }
 
-    .news-card h5 {
+    .news-card h3 {
         font-size: 1.1rem;
         margin-bottom: 0.75rem;
         color: var(--white);
@@ -63,7 +63,7 @@
 
     .news-card-date {
         font-size: 0.85rem;
-        color: rgba(255,255,255,0.7);
+        color: rgba(255,255,255,0.9);
         margin-bottom: 0.5rem;
     }
 
@@ -344,7 +344,7 @@
                             <div class="news-card-date">
                                 <i class="bi bi-calendar3"></i> {{ $news->published_at->format('d M Y') }}
                             </div>
-                            <h5>{{ $news->title }}</h5>
+                            <h3>{{ $news->title }}</h3>
                             @if($news->excerpt)
                                 <p style="font-size: 0.9rem; color: rgba(255,255,255,0.8); margin-bottom: 0.75rem;">
                                     {{ Str::limit($news->excerpt, 100) }}

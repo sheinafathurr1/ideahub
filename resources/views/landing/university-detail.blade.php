@@ -78,12 +78,12 @@
         margin-bottom: 0;
     }
 
-    .info-section h4 {
-        color: var(--maroon-primary);
+    .info-section h2 {
+        color: var(--gray-700);
         font-size: 1.1rem;
         margin-bottom: 1rem;
         padding-bottom: 0.5rem;
-        border-bottom: 2px solid var(--maroon-primary);
+        border-bottom: 2px solid var(--gray-700);
     }
 
     .info-row {
@@ -264,7 +264,7 @@
             gap: 1.5rem;
         }
 
-        .info-section h4 {
+        .info-section h2 {
             font-size: 1rem;
         }
 
@@ -386,7 +386,7 @@
             <div class="combined-info">
                 <!-- Info Umum -->
                 <div class="info-section">
-                    <h4><i class="bi bi-info-circle-fill me-2"></i>Informasi Umum</h4>
+                    <h2><i class="bi bi-info-circle-fill me-2"></i>Informasi Umum</h2>
                     
                     <div class="info-row">
                         <div class="info-label">Nama PT</div>
@@ -425,7 +425,7 @@
                 @endphp
 
                 <div class="info-section">
-                    <h4><i class="bi bi-hospital-fill me-2"></i>Unit Layanan Disabilitas</h4>
+                    <h2><i class="bi bi-hospital-fill me-2"></i>Unit Layanan Disabilitas</h2>
                     
                     <div class="info-row">
                         <div class="info-label">Ketersediaan ULD</div>
@@ -446,7 +446,7 @@
 
             <!-- FACILITIES COLUMN -->
             <div class="info-section">
-                <h4><i class="bi bi-patch-check me-2"></i>Fasilitas Pendukung</h4>
+                <h2><i class="bi bi-patch-check me-2"></i>Fasilitas Pendukung</h2>
 
                 @php
                     $q38 = $questions->get('q38');

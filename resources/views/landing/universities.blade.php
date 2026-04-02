@@ -154,7 +154,7 @@
         color: var(--maroon-primary);
         padding: 0.25rem 0.75rem;
         font-size: 0.8rem;
-        font-weight: 600;
+        font-weight: 700;
     }
     .university-facilities {
         display: flex;
@@ -245,8 +245,9 @@
     
     .pagination .page-item.active .page-link {
         background: var(--orange-primary);
-        color: var(--white);
+        color: var(--maroon-primary);
         border-color: var(--orange-primary);
+        font-weight: 700;
     }
     
     .pagination .page-item.disabled .page-link {
@@ -451,7 +452,7 @@
                                 @endif
                             </div>
                             <div class="university-card-body">
-                                <h3 class="university-name">{{ $university->university_name }}</h3>
+                                <h2 class="university-name">{{ $university->university_name }}</h2>
                                 
                                 <div class="university-meta">
                                     <span class="university-badge">{{ $university->university_type }}</span>
@@ -480,7 +481,7 @@
         @else
             <div class="no-results">
                 <i class="bi bi-inbox"></i>
-                <h4>Tidak ada universitas ditemukan</h4>
+                <h2>Tidak ada universitas ditemukan</h2>
                 <p class="text-secondary">
                     @if($activeFilter)
                         Tidak ada universitas dengan fasilitas "{{ $activeFilter }}"
