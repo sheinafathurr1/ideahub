@@ -6,6 +6,9 @@ use App\Models\Submission;
 use App\Models\User;
 use App\Models\Question;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -269,5 +272,253 @@ class AdminController extends Controller
         $submissions->appends($request->all());
 
         return view('admin.history', compact('submissions'));
+    }
+
+   
+    /**
+     * FUNGSI IMPORT CSV (SUPER AMAN + MENDUKUNG PARAGRAF/ENTER DI DALAM ESAI)
+     */
+    public function importReport(Request $request)
+    {
+        $request->validate([
+            'csv_file' => 'required|file|mimes:csv,txt,xlsx,xls|max:10240',
+        ]);
+
+        $path = $request->file('csv_file')->getRealPath();
+        
+        // 1. AUTO-DETECT DELIMITER DENGAN AMAN
+        $handle = fopen($path, 'r');
+        $firstLine = fgets($handle);
+        if (!$firstLine) {
+            fclose($handle);
+            return back()->withErrors(['csv_file' => 'File CSV kosong.']);
+        }
+        $delimiter = strpos($firstLine, ';') !== false ? ';' : ',';
+        rewind($handle); // Kembalikan pointer baca ke awal file
+
+        // 2. BACA CSV DENGAN fgetcsv (Kebal terhadap ENTER di dalam teks/esai)
+        $data = [];
+        while (($row = fgetcsv($handle, 0, $delimiter)) !== false) {
+            $data[] = $row;
+        }
+        fclose($handle);
+
+        if (count($data) < 2) {
+            return back()->withErrors(['csv_file' => 'Format CSV tidak sesuai.']);
+        }
+
+        // 3. BERSIHKAN HEADER
+        $headers = array_map('trim', $data[0]);
+        $headers[0] = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $headers[0]);
+        $headerMap = array_flip($headers);
+
+        $questions = \App\Models\Question::with('options')->get();
+
+        \Illuminate\Support\Facades\DB::beginTransaction();
+        try {
+            // Lewati baris metadata bawaan Qualtrics
+            $startIndex = 1;
+            if (isset($data[1][0]) && (str_contains(strtolower($data[1][0]), 'progress') || str_contains(strtolower($data[1][0]), 'startdate'))) {
+                $startIndex = 2;
+                if (isset($data[2][0]) && str_contains($data[2][0], '{"ImportId"')) {
+                    $startIndex = 3;
+                }
+            }
+
+            for ($i = $startIndex; $i < count($data); $i++) {
+                $row = $data[$i];
+                if (count($row) < 3) continue; 
+
+                // A. MAPPING IDENTITAS DENGAN PELINDUNG KARAKTER
+                $nameRaw = $this->getCellValue($row, $headerMap, ['Q0a', 'Nama Lengkap']) ?? 'User Import ' . $i;
+                $name = substr($nameRaw, 0, 200);
+
+                $univNameRaw = $this->getCellValue($row, $headerMap, ['Q1', 'Nama Instansi / Kampus', 'Nama Perguruan Tinggi']) ?? 'Kampus Unknown';
+                $univName = substr($univNameRaw, 0, 200);
+                if (empty(trim($univName))) $univName = 'Kampus Unknown';
+                
+                $univTypeRaw = strtoupper($this->getCellValue($row, $headerMap, ['Q2', 'Jenis PT']) ?? 'PTN');
+                $univType = in_array($univTypeRaw, ['PTN', 'PTS']) ? $univTypeRaw : 'PTN';
+                
+                $univCatRaw = $this->getCellValue($row, $headerMap, ['Q4', 'Kategori']) ?? 'Universitas';
+                if (strlen($univCatRaw) > 100) {
+                    $univCat = 'Lainnya';
+                } else {
+                    $univCat = substr($univCatRaw, 0, 100);
+                }
+
+                // B. HANDLE EMAIL DENGAN PELINDUNG KARAKTER (DIPERPENDEK)
+                $email = $this->getCellValue($row, $headerMap, ['Email', 'email']);
+                if (empty($email) || $email === '-') {
+                    // Bersihkan spasi dan karakter khusus dari nama kampus
+                    $cleanUnivName = preg_replace('/[^a-zA-Z0-9]/', '', strtolower($univName));
+                    if (empty($cleanUnivName)) $cleanUnivName = 'kampus';
+                    
+                    // Ambil maksimal 10 huruf pertama saja + nomor baris + @dummy.com
+                    // Contoh hasil: universita_5@dummy.com
+                    $email = substr($cleanUnivName, 0, 10) . '_' . $i . '@dummy.com';
+                }
+
+                // C. BUAT USER
+                $user = \App\Models\User::where('email', $email)->first();
+                if (!$user) {
+                    $user = \App\Models\User::create([
+                        'name' => $name,
+                        'email' => $email,
+                        'password' => \Illuminate\Support\Facades\Hash::make('password123'),
+                        'phone_number' => '0000000000',
+                        'university_name' => $univName,
+                        'university_type' => $univType,
+                        'university_category' => $univCat,
+                        'has_disability_study_program' => 0,
+                        'role' => 'user'
+                    ]);
+                }
+
+                if (!$user || !$user->id) {
+                    throw new \Exception("Gagal membuat akun User pada baris ke-{$i}.");
+                }
+
+                // D. BUAT SUBMISI
+                $submission = \App\Models\Submission::updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'status' => 'accepted', 
+                        'submitted_at' => now(),
+                        'current_step' => 10
+                    ]
+                );
+
+                // E. MAPPING JAWABAN SURVEI
+                foreach ($questions as $q) {
+                    $qCode = strtoupper($q->code ?? ''); 
+                    if (empty($qCode)) continue;
+
+                    if ($q->type == 'matrix' && $q->options->count() > 0) {
+                        $matrixValues = [];
+                        $optIndex = 1;
+                        
+                        foreach ($q->options as $opt) {
+                            $possibleHeaders = [
+                                $qCode . '_' . $optIndex,
+                                $qCode . '_' . $optIndex . '_TEXT',
+                                $q->question . ' - ' . trim($opt->option_label)
+                            ];
+
+                            $val = $this->getCellValue($row, $headerMap, $possibleHeaders);
+                            if ($val !== null && $val !== '') {
+                                $matrixValues[trim($opt->option_label)] = $val;
+                            }
+                            $optIndex++;
+                        }
+
+                        if (!empty($matrixValues)) {
+                            \App\Models\SubmissionValue::updateOrCreate(
+                                ['submission_id' => $submission->id, 'question_id' => $q->id],
+                                ['value' => json_encode($matrixValues)]
+                            );
+                        }
+                    } 
+                    else {
+                        $possibleHeaders = [
+                            $qCode,
+                            $qCode . '_1',
+                            $qCode . '_TEXT',
+                            str_replace(["\r", "\n", "\t"], " ", $q->question)
+                        ];
+
+                        $val = $this->getCellValue($row, $headerMap, $possibleHeaders);
+
+                        if ($val !== null && $val !== '') {
+                            if ($q->type == 'checkbox') {
+                                $arrVal = array_map('trim', explode(',', $val));
+                                $val = json_encode($arrVal);
+                            }
+
+                            \App\Models\SubmissionValue::updateOrCreate(
+                                ['submission_id' => $submission->id, 'question_id' => $q->id],
+                                ['value' => $val]
+                            );
+                        }
+                    }
+                }
+            }
+
+            \Illuminate\Support\Facades\DB::commit();
+            return back()->with('success', 'Data CSV berhasil diimport dan dipetakan secara otomatis!');
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return back()->withErrors(['csv_file' => 'Gagal Import: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Helper Function Aman untuk mencari nilai dari Header CSV
+     */
+    private function getCellValue($row, $headerMap, $possibleHeaders) {
+        foreach ($possibleHeaders as $header) {
+            if (isset($headerMap[$header]) && isset($row[$headerMap[$header]])) {
+                return trim($row[$headerMap[$header]]);
+            }
+        }
+        return null;
+    }
+
+    // Menampilkan halaman form edit user
+    public function editUser($id)
+    {
+        $user = \App\Models\User::findOrFail($id);
+        return view('admin.edit-user', compact('user'));
+    }
+
+    // Memproses update data user
+    // Memproses update data user
+    public function updateUser(Request $request, $id)
+    {
+        $user = \App\Models\User::findOrFail($id);
+
+        $rules = [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'university_name' => 'required|string|max:255',
+            'university_type' => 'required|in:PTN,PTS',
+            'university_category' => 'required|string',
+            'password' => 'nullable|string|min:8',
+            // TAMBAHKAN VALIDASI LOGO
+            'university_logo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', 
+        ];
+
+        $validated = $request->validate($rules);
+
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        $user->university_name = $validated['university_name'];
+        $user->university_type = $validated['university_type'];
+        $user->university_category = $validated['university_category'];
+
+        // Jika admin mengisi field password, maka password user di-reset
+        if ($request->filled('password')) {
+            $user->password = \Illuminate\Support\Facades\Hash::make($validated['password']);
+        }
+
+        // LOGIKA PENYIMPANAN LOGO BARU
+        if ($request->hasFile('university_logo')) {
+            // Hapus logo lama dari server jika ada
+            if ($user->university_logo) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->university_logo);
+            }
+
+            // Simpan logo baru
+            $file = $request->file('university_logo');
+            $extension = $file->getClientOriginalExtension();
+            $fileName = 'Logo_' . \Illuminate\Support\Str::slug($validated['university_name']) . '_' . time() . '.' . $extension;
+            
+            $user->university_logo = $file->storeAs('university_logos', $fileName, 'public');
+        }
+
+        $user->save();
+
+        return redirect()->route('admin.users')->with('success', 'Data pengguna berhasil diperbarui!');
     }
 }

@@ -55,43 +55,45 @@
         </div>
     </div>
 
-    <div class="card border-black rounded-4 p-4 p-lg-5 shadow-sm">
-        <div class="row align-items-center">
-            <div class="col-lg-7 mb-4 mb-lg-0">
-                <h3 class="fw-bold mb-3">Export Data Jawaban</h3>
-                <p class="text-secondary mb-4" style="max-width: 500px; line-height: 1.6;">
-                    Unduh data lengkap hasil survei dalam format CSV yang kompatibel dengan Microsoft Excel. Data akan disusun secara horizontal (Pivot) berdasarkan pertanyaan.
-                </p>
+    <div class="row g-4 mt-2">
+        <div class="col-lg-6">
+            <div class="card border-black rounded-4 p-4 p-lg-5 shadow-sm h-100">
+                <h3 class="fw-bold mb-3">Export Data</h3>
+                <p class="text-secondary mb-4">Unduh data hasil survei dalam format CSV (Pivot). Data file akan dijadikan link aktif.</p>
                 
-                <div class="d-flex gap-4 text-secondary small fw-medium">
-                    <div class="d-flex align-items-center gap-2">
-                        <i class="bi bi-filetype-csv fs-5 text-dark"></i> Format .CSV
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <i class="bi bi-layout-three-columns fs-5 text-dark"></i> Struktur Pivot
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <i class="bi bi-check-all fs-5 text-dark"></i> UTF-8 Support
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-5">
-                <div class="bg-light p-4 rounded-4 border">
+                <div class="bg-light p-4 rounded-4 border mt-auto">
                     <form action="{{ route('admin.reports.export') }}" method="GET">
                         <label class="form-label fw-bold small text-uppercase mb-2 text-secondary">Filter Data</label>
-                        
                         <div class="mb-3">
-                            <select name="status" class="form-select border-secondary w-100 py-3 fw-medium">
+                            <select name="status" class="form-select border-secondary py-3 fw-medium">
                                 <option value="">Semua Data (All Data)</option>
                                 <option value="accepted">Hanya yang Disetujui (Accepted)</option>
                                 <option value="rejected">Hanya yang Ditolak (Rejected)</option>
                                 <option value="submitted">Hanya yang Menunggu (Pending)</option>
                             </select>
                         </div>
-
                         <button type="submit" class="btn btn-dark w-100 py-3 fw-bold rounded-3 d-flex align-items-center justify-content-center gap-2">
-                            Unduh Data Sekarang <i class="bi bi-download"></i>
+                            Unduh .CSV <i class="bi bi-download"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card border-black rounded-4 p-4 p-lg-5 shadow-sm h-100">
+                <h3 class="fw-bold mb-3">Import Data</h3>
+                <p class="text-secondary mb-4">Unggah kembali file CSV hasil export. Jika email user sudah ada, datanya akan diperbarui secara otomatis.</p>
+                
+                <div class="bg-light p-4 rounded-4 border border-dashed mt-auto">
+                    <form action="{{ route('admin.reports.import') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <label class="form-label fw-bold small text-uppercase mb-2 text-secondary">Unggah File CSV</label>
+                        <div class="mb-3">
+                            <input type="file" name="csv_file" class="form-control border-secondary py-2" accept=".csv" required>
+                        </div>
+                        <button type="submit" class="btn btn-outline-dark border-2 w-100 py-3 fw-bold rounded-3 d-flex align-items-center justify-content-center gap-2">
+                            Mulai Import <i class="bi bi-upload"></i>
                         </button>
                     </form>
                 </div>

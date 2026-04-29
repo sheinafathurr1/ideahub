@@ -47,7 +47,7 @@
                                     <i class="bi bi-three-dots-vertical fs-5"></i>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end border-black shadow-sm">
-                                    <li><a class="dropdown-item small" href="#">Edit User</a></li>
+                                    <li><a class="dropdown-item small" href="{{ route('admin.users.edit', $user->id) }}">Edit User</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item small text-danger fw-bold" href="#">Hapus</a></li>
                                 </ul>

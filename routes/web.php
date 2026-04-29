@@ -66,4 +66,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/news/{news}/edit', [NewsController::class, 'edit'])->name('admin.news.edit');
     Route::put('/news/{news}', [NewsController::class, 'update'])->name('admin.news.update');
     Route::delete('/news/{news}', [NewsController::class, 'destroy'])->name('admin.news.destroy');
+
+    // Tambahkan di dalam group Route::prefix('admin')->middleware(['auth', 'admin'])
+    Route::post('/reports/import', [App\Http\Controllers\AdminController::class, 'importReport'])->name('admin.reports.import');
+
+    // Route untuk menampilkan form edit user
+    Route::get('/users/{id}/edit', [App\Http\Controllers\AdminController::class, 'editUser'])->name('admin.users.edit');
+
+    // Route untuk memproses update data user
+    Route::put('/users/{id}', [App\Http\Controllers\AdminController::class, 'updateUser'])->name('admin.users.update');
 });
